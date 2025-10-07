@@ -1,0 +1,22 @@
+.wrapperHero  {
+    width: 100%;
+    height: 100%;
+}
+
+.slideHero {
+    background-position: center;
+    background-size: cover;
+}
+
+.slideImgHero  {
+    display: block;
+    width: 100%;
+
+}
+
+@media only screen and (min-width: 320px) and (max-width: 600px)  {
+    .slideImgHero {
+        width: 200px;
+        height: 100px;
+    }
+}

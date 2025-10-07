@@ -23,7 +23,7 @@ export function PageContainer({
       <Container
         maxWidth="xl"
         sx={{
-          px: { xs: 2, sm: 2, md: 6, lg: 12, xl: 0 },
+          px: { xs: 1, sm: 2, md: 6, lg: 12, xl: 0 },
           ...sxContainer,
         }}
         {...containerProps}
