@@ -13,7 +13,6 @@ export interface PageContainerProps extends StackProps {
 
 export function PageContainer({
   children,
-  color,
   sxContainer,
   containerProps = {},
   ...props

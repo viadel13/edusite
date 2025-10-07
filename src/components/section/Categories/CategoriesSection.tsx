@@ -1,22 +1,13 @@
-// src/components/BooksExplorer.tsx
-
 "use client";
 import React, { useEffect } from "react";
 import {
-  Container,
   Typography,
   Box,
   Button,
-  Card,
-  CardMedia,
-  CardContent,
-  CardActions,
-  Chip,
   CircularProgress,
   Alert,
-  Rating,
 } from "@mui/material";
-import Grid from "@mui/material/Grid";
+
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import {
   fetchBooksByCategory,

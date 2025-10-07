@@ -1,5 +1,3 @@
-import React, { useRef, useState } from "react";
-// Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Icon } from "@iconify/react";
 
@@ -8,7 +6,7 @@ import "swiper/css";
 
 import styles from "./styles.module.css";
 import { Stack, Typography } from "@mui/material";
-import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
+import { Autoplay } from "swiper/modules";
 
 export default function BenefitsServiceSwipper() {
   return (

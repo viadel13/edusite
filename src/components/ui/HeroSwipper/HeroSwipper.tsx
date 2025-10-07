@@ -14,10 +14,9 @@ import styles from "./styles.module.css";
 // import required modules
 import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
 import Image from "next/image";
-import Grid from "@mui/material/Grid";
+
 import { Button, Stack, Typography } from "@mui/material";
 import PageContainer from "@/components/layout/PageContainer/PageContainer";
-// import "./st.css";
 
 export default function HeroSwipper() {
   return (

@@ -5,7 +5,6 @@ import {
   BadgeProps,
   Box,
   Button,
-  Container,
   IconButton,
   Stack,
   styled,
@@ -23,7 +22,7 @@ import DrawerList from "@/components/ui/DrawerList/DrawerList";
 import { usePathname, useRouter } from "next/navigation";
 import { usePageLoader } from "@/contexts/PageLoaderContext";
 
-const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
+const StyledBadge = styled(Badge)<BadgeProps>(() => ({
   "& .MuiBadge-badge": {
     right: 3,
     top: 13,
@@ -36,7 +35,7 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
   },
 }));
 
-const StyledBadgeResponsive = styled(Badge)<BadgeProps>(({ theme }) => ({
+const StyledBadgeResponsive = styled(Badge)<BadgeProps>(() => ({
   "& .MuiBadge-badge": {
     right: 3,
     top: 13,

@@ -1,9 +1,5 @@
-import React, { useRef, useState } from "react";
-// Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Icon } from "@iconify/react";
 
-// Import Swiper styles
 import "swiper/css";
 
 import styles from "./styles.module.css";
@@ -19,7 +15,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
+import { Autoplay } from "swiper/modules";
 
 interface CategoriesSwipperProps {
   books: any;
@@ -67,8 +63,8 @@ export default function CategoriesSwipper({
           },
         }}
       >
-        {books.slice(0, 10).map((book, index) => (
-          <SwiperSlide className={styles.slideBenfitsService}>
+        {books.slice(0, 10).map((book: any, index: any) => (
+          <SwiperSlide className={styles.slideBenfitsService} key={book.id}>
             <Card
               sx={{
                 height: "100%",
@@ -231,7 +227,7 @@ export default function CategoriesSwipper({
               {book.subjects && book.subjects.length > 0 && (
                 <Box sx={{ px: 2, pb: 2 }}>
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                    {book.subjects.slice(0, 2).map((subject, idx) => (
+                    {book.subjects.slice(0, 2).map((subject: any, idx: any) => (
                       <Chip
                         key={idx}
                         label={subject}

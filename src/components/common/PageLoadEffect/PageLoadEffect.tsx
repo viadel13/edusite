@@ -11,7 +11,7 @@ export const PageLoadEffect = () => {
 
   useEffect(() => {
     setLoadPage(false);
-  }, [pathname]);
+  }, [pathname, setLoadPage]);
 
   return null;
 };
