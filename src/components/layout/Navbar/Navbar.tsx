@@ -123,7 +123,7 @@ function Navbar() {
                   sx={{
                     color: pathname === page.link ? "#D68B19" : "black",
                     fontWeight: 600,
-                    fontSize: 16,
+                    fontSize: 18,
                     textTransform: "capitalize",
                     position: "relative",
                     "&:after": {

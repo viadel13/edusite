@@ -1,9 +1,11 @@
 "use client";
 
 import { Stack } from "@mui/material";
-import HeroSection from "@/components/section/HeroSection";
+import HeroSection from "@/components/section/HeroSection/HeroSection";
 import { usePageLoader } from "@/contexts/PageLoaderContext";
 import { useEffect, useState } from "react";
+import BenefitsService from "@/components/section/BenefitsService/BenefitsService";
+import CategoriesSection from "@/components/section/Categories/CategoriesSection";
 
 export default function Home() {
   const { setLoadPage } = usePageLoader();
@@ -27,6 +29,8 @@ export default function Home() {
   return (
     <Stack>
       <HeroSection />
+      <BenefitsService />
+      <CategoriesSection />
     </Stack>
   );
 }

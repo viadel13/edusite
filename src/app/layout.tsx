@@ -2,10 +2,10 @@ import { Metadata } from "next";
 import { Merriweather, Roboto } from "next/font/google";
 import "../assets/styles/globals.css";
 import Navbar from "@/components/layout/Navbar/Navbar";
-import PageContainer from "@/components/layout/PageContainer/PageContainer";
 import { PageLoaderProvider } from "@/contexts/PageLoaderContext";
 import PageLoadEffect from "@/components/common/PageLoadEffect/PageLoadEffect";
 import GlobalLoader from "@/components/layout/GlobalLoader/GlobalLoader";
+import { RootProvider } from "@/providers/RootProvider";
 
 const merriweather = Merriweather({
   variable: "--font-merriweather",
@@ -30,12 +30,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${merriweather.variable} ${roboto.variable}`}>
-        <PageLoaderProvider>
-          <PageLoadEffect />
-          <GlobalLoader />
-          <Navbar />
-          {children}
-        </PageLoaderProvider>
+        <RootProvider>
+          <PageLoaderProvider>
+            <PageLoadEffect />
+            <GlobalLoader />
+            <Navbar />
+            {children}
+          </PageLoaderProvider>
+        </RootProvider>
       </body>
     </html>
   );

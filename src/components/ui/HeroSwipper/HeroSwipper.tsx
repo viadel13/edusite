@@ -25,15 +25,13 @@ export default function HeroSwipper() {
       <Swiper
         spaceBetween={30}
         autoplay={{
-          delay: 2500,
+          delay: 4500,
           disableOnInteraction: false,
         }}
         effect={"fade"}
         navigation={false}
-        pagination={{
-          clickable: true,
-        }}
-        modules={[EffectFade, Navigation, Pagination]}
+        pagination={false}
+        modules={[Autoplay, EffectFade, Navigation, Pagination]}
         className={styles.wrapperHero}
       >
         <SwiperSlide className={styles.slideHero}>
