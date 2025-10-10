@@ -13,6 +13,7 @@ import {
   selectAllBooks,
   selectBooksError,
   selectBooksLoading,
+  selectCategoriesSuper,
   selectSelectedCategory,
   setSelectedCategory,
 } from "@/store/slices/booksSlice";
@@ -29,13 +30,7 @@ const CategoriesSection: React.FC = () => {
   const loading = useAppSelector(selectBooksLoading);
   const error = useAppSelector(selectBooksError);
   const selectedCategory = useAppSelector(selectSelectedCategory);
-
-  // Définir les 3 catégories principales
-  const topCategories = [
-    { id: "biography", label: "BIOGRAPHY", color: "#F59E0B" },
-    { id: "thriller", label: "THRILLER", color: "#F59E0B" },
-    { id: "science_fiction", label: "SCI-FI", color: "#F59E0B" },
-  ];
+  const categoriesSuper = useAppSelector(selectCategoriesSuper);
 
   // Charger la première catégorie au montage
   useEffect(() => {
@@ -52,16 +47,6 @@ const CategoriesSection: React.FC = () => {
   const handleCategoryClick = (categoryId: string) => {
     dispatch(setSelectedCategory(categoryId));
     dispatch(fetchBooksByCategory(categoryId));
-  };
-
-  // Générer un prix aléatoire pour la démo
-  const getRandomPrice = () => {
-    return (Math.random() * 50 + 10).toFixed(2);
-  };
-
-  // Générer une note aléatoire
-  const getRandomRating = () => {
-    return Math.floor(Math.random() * 2) + 3; // Entre 3 et 5
   };
 
   return (
@@ -81,6 +66,16 @@ const CategoriesSection: React.FC = () => {
       >
         Top Categories
       </Typography>
+      {loading && (
+        <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+          <CircularProgress
+            size={60}
+            sx={{
+              color: "#D68B19",
+            }}
+          />
+        </Box>
+      )}
 
       {/* Boutons des catégories */}
       <Box
@@ -92,38 +87,59 @@ const CategoriesSection: React.FC = () => {
           flexWrap: "wrap",
         }}
       >
-        {topCategories.map((category) => (
-          <Button
-            key={category.id}
-            variant={
-              selectedCategory === category.id ? "contained" : "outlined"
-            }
-            onClick={() => handleCategoryClick(category.id)}
-            sx={{
-              fontSize: "0.9rem",
+        {/* Grille des livres */}
 
-              letterSpacing: "0.05em",
-              borderRadius: 0,
-              borderWidth: 2,
-              backgroundColor:
-                selectedCategory === category.id
-                  ? category.color
-                  : "transparent",
-              borderColor:
-                selectedCategory === category.id ? category.color : "#E5E7EB",
-              color: selectedCategory === category.id ? "white" : "#374151",
-              "&:hover": {
-                backgroundColor:
-                  selectedCategory === category.id ? category.color : "#F9FAFB",
-                borderColor: category.color,
+        {!loading &&
+          categoriesSuper.length > 0 &&
+          categoriesSuper.map((category) => (
+            <Button
+              key={category.id}
+              variant={
+                selectedCategory === category.id ? "contained" : "outlined"
+              }
+              onClick={() => handleCategoryClick(category.id)}
+              sx={{
+                fontSize: "0.9rem",
+
+                letterSpacing: "0.05em",
+                borderRadius: 0,
                 borderWidth: 2,
-              },
+                backgroundColor:
+                  selectedCategory === category.id
+                    ? category.color
+                    : "transparent",
+                borderColor:
+                  selectedCategory === category.id ? category.color : "#E5E7EB",
+                color: selectedCategory === category.id ? "white" : "#374151",
+                "&:hover": {
+                  backgroundColor:
+                    selectedCategory === category.id
+                      ? category.color
+                      : "#F9FAFB",
+                  borderColor: category.color,
+                  borderWidth: 2,
+                },
+              }}
+            >
+              {category.name}
+            </Button>
+          ))}
+      </Box>
+
+      {/* Message si aucun livre */}
+      {!loading && books.length === 0 && (
+        <Box sx={{ textAlign: "center" }}>
+          <Typography
+            variant="h6"
+            sx={{
+              color: "#D68B19",
+              fontSize: 17,
             }}
           >
-            {category.label}
-          </Button>
-        ))}
-      </Box>
+            Aucun livre trouvé dans cette catégorie.
+          </Typography>
+        </Box>
+      )}
 
       {/* Affichage des erreurs */}
       {error && (
@@ -132,30 +148,9 @@ const CategoriesSection: React.FC = () => {
         </Alert>
       )}
 
-      {/* Loader */}
-      {loading && (
-        <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
-          <CircularProgress size={60} />
-        </Box>
-      )}
-
       {/* Grille des livres */}
       {!loading && books.length > 0 && (
-        <CategoriesSwipper
-          books={books}
-          getRandomPrice={getRandomPrice}
-          getRandomRating={getRandomRating}
-          selectedCategory={selectedCategory}
-        />
-      )}
-
-      {/* Message si aucun livre */}
-      {!loading && books.length === 0 && (
-        <Box sx={{ textAlign: "center", py: 8 }}>
-          <Typography variant="h6" color="text.secondary">
-            Aucun livre trouvé dans cette catégorie.
-          </Typography>
-        </Box>
+        <CategoriesSwipper books={books} selectedCategory={selectedCategory} />
       )}
     </PageContainer>
   );

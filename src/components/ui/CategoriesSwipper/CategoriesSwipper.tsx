@@ -16,18 +16,15 @@ import {
   Typography,
 } from "@mui/material";
 import { Autoplay } from "swiper/modules";
+import { Book } from "@/types/firestore.type";
 
 interface CategoriesSwipperProps {
-  books: any;
+  books: Book[];
   selectedCategory: any;
-  getRandomPrice: () => any;
-  getRandomRating: () => any;
 }
 
 export default function CategoriesSwipper({
   books,
-  getRandomPrice,
-  getRandomRating,
   selectedCategory,
 }: CategoriesSwipperProps) {
   return (
@@ -46,7 +43,6 @@ export default function CategoriesSwipper({
             slidesPerView: 2,
             spaceBetween: 10,
           },
-
 
           640: {
             slidesPerView: 2,
@@ -69,7 +65,7 @@ export default function CategoriesSwipper({
           },
         }}
       >
-        {books.slice(0, 10).map((book: any, index: any) => (
+        {books.slice(0, 10).map((book, index: number) => (
           <SwiperSlide className={styles.slideBenfitsService} key={book.id}>
             <Card
               sx={{
@@ -113,7 +109,7 @@ export default function CategoriesSwipper({
                 image={book.coverUrl}
                 alt={book.title}
                 sx={{
-                  height: {xs: 200, sm: 300},
+                  height: { xs: 200, sm: 300 },
                   objectFit: "cover",
                 }}
               />
@@ -136,33 +132,35 @@ export default function CategoriesSwipper({
                 </Typography>
 
                 {/* Titre */}
-                <Stack direction="row"  width={"100%"} justifyContent={"space-between"}>
-
-                <Typography
-                  variant="h6"
-                  component="h2"
-                  gutterBottom
-                  sx={{
-                    fontSize: "1rem",
-                    fontWeight: 400,
-                    lineHeight: 1.4,
-                    mb: 1,
-                    minHeight: "2.8em",
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
+                <Stack
+                  direction="row"
+                  width={"100%"}
+                  justifyContent={"space-between"}
                 >
-                  {book.title}
-                </Typography>
+                  <Typography
+                    variant="h6"
+                    component="h2"
+                    gutterBottom
+                    sx={{
+                      fontSize: "1rem",
+                      fontWeight: 400,
+                      lineHeight: 1.4,
+                      mb: 1,
+                      minHeight: "2.8em",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {book.title}
+                  </Typography>
                   <Rating
-                      value={getRandomRating()}
-                      readOnly
-                      size="small"
-                      sx={{ mb: 1 }}
+                    value={book.rating}
+                    readOnly
+                    size="small"
+                    sx={{ mb: 1 }}
                   />
-
                 </Stack>
                 {/* Prix */}
                 <Box
@@ -181,21 +179,20 @@ export default function CategoriesSwipper({
                       fontSize: "1.25rem",
                     }}
                   >
-                    ${getRandomPrice()}
+                    ${book.price}
                   </Typography>
-                  {index === 2 && (
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "#9CA3AF",
-                        textDecoration: "line-through",
-                      }}
-                    >
-                      ${(parseFloat(getRandomPrice()) * 1.5).toFixed(2)}
-                    </Typography>
-                  )}
+                  {/*{index === 2 && (*/}
+                  {/*  <Typography*/}
+                  {/*    variant="body2"*/}
+                  {/*    sx={{*/}
+                  {/*      color: "#9CA3AF",*/}
+                  {/*      textDecoration: "line-through",*/}
+                  {/*    }}*/}
+                  {/*  >*/}
+                  {/*    ${(parseFloat(getRandomPrice()) * 1.5).toFixed(2)}*/}
+                  {/*  </Typography>*/}
+                  {/*)}*/}
                 </Box>
-
 
                 {/* Auteur */}
                 <Typography

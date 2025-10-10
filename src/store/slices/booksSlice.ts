@@ -13,8 +13,6 @@ import {
   searchBooks,
   updateBook,
   deleteBook,
-  CACHE_DURATION,
-  isCacheValid,
 } from "@/store/slices/booksThunks";
 
 // 1. INTERFACE STATE
@@ -123,14 +121,6 @@ const booksSlice = createSlice({
         state.loading = false;
         state.items = action.payload;
 
-        // Mettre à jour le cache
-        if (state.selectedCategory) {
-          state.cache[state.selectedCategory] = {
-            data: action.payload,
-            timestamp: Date.now(),
-            expiresAt: Date.now() + CACHE_DURATION,
-          };
-        }
         state.lastFetch = Date.now();
       })
       .addCase(fetchBooksByCategory.rejected, (state, action) => {
@@ -270,6 +260,8 @@ export const selectBooksError = (state: RootState) => state.books.error;
 export const selectSelectedBook = (state: RootState) =>
   state.books.selectedBook;
 export const selectCategories = (state: RootState) => state.books.categories;
+export const selectCategoriesSuper = (state: RootState) =>
+  state.books.superCategories;
 export const selectSelectedCategory = (state: RootState) =>
   state.books.selectedCategory;
 export const selectSearchQuery = (state: RootState) => state.books.searchQuery;
@@ -277,12 +269,6 @@ export const selectFeaturedBooks = (state: RootState) =>
   state.books.featuredBooks;
 export const selectCacheStatus = (state: RootState) => state.books.cache;
 export const selectLastFetch = (state: RootState) => state.books.lastFetch;
-
-export const selectIsCategoryCached =
-  (categoryId: string) => (state: RootState) => {
-    const cached = state.books.cache[categoryId];
-    return cached && isCacheValid(cached.timestamp, CACHE_DURATION);
-  };
 
 // 9. REDUCER
 export default booksSlice.reducer;

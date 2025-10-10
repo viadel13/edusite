@@ -16,15 +16,6 @@ import {
 } from "@/lib/firebase/firestore";
 import type { RootState } from "@/store/store";
 
-// 3. CONSTANTES DE CACHE
-export const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 heures
-const STALE_TIME = 60 * 60 * 1000; // 1 heure
-
-// 4. FONCTIONS HELPERS
-export function isCacheValid(timestamp: number, maxAge: number): boolean {
-  return Date.now() - timestamp < maxAge;
-}
-
 /**
  * Récupérer toutes les catégories
  */
@@ -73,30 +64,6 @@ export const fetchBooksByCategory = createAsyncThunk<
   "books/fetchBooksByCategory",
   async (categoryId, { rejectWithValue, getState }) => {
     try {
-      const state = getState();
-      const cachedData = state.books.cache[categoryId];
-
-      // Vérifier le cache Redux (fraîcheur < 1h)
-      if (cachedData && isCacheValid(cachedData.timestamp, STALE_TIME)) {
-        console.log("✅ Cache Redux frais");
-        return cachedData.data;
-      }
-
-      // Cache "stale" mais valide (< 24h)
-      if (cachedData && isCacheValid(cachedData.timestamp, CACHE_DURATION)) {
-        console.log("⚠️ Cache stale - refresh background");
-
-        // Rafraîchir en arrière-plan
-        getBooksByCategory(categoryId).then((books) => {
-          // Mettre à jour silencieusement
-          console.log("✅ Cache refreshed");
-        });
-
-        return cachedData.data;
-      }
-
-      // Appel Firestore
-      console.log("🔍 Appel Firestore");
       const books = await getBooksByCategory(categoryId);
       return books;
     } catch (error) {
