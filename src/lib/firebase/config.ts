@@ -17,15 +17,6 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// const firebaseConfig = {
-//   apiKey: "AIzaSyBGWqY53xU64cGEf2_AyJKwPLnpRWc9-lQ",
-//   authDomain: "dv-edusite.firebaseapp.com",
-//   projectId: "dv-edusite",
-//   storageBucket: "dv-edusite.firebasestorage.app",
-//   messagingSenderId: "179408258463",
-//   appId: "1:179408258463:web:fbc7b2921e76d6b376e9aa",
-// };
-
 // Initialize Firebase
 
 let app;
