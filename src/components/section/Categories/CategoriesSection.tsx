@@ -10,15 +10,18 @@ import {
 
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import {
-  fetchBooksByCategory,
   selectAllBooks,
   selectBooksError,
   selectBooksLoading,
   selectSelectedCategory,
   setSelectedCategory,
-} from "@/store/slices/bookSlice";
+} from "@/store/slices/booksSlice";
 import PageContainer from "@/components/layout/PageContainer/PageContainer";
 import CategoriesSwipper from "@/components/ui/CategoriesSwipper/CategoriesSwipper";
+import {
+  fetchBooksByCategory,
+  fetchCategoriesSuper,
+} from "@/store/slices/booksThunks";
 
 const CategoriesSection: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -40,6 +43,10 @@ const CategoriesSection: React.FC = () => {
       handleCategoryClick("biography");
     }
   }, []);
+
+  useEffect(() => {
+    dispatch(fetchCategoriesSuper());
+  }, [dispatch]);
 
   // Gérer le clic sur une catégorie
   const handleCategoryClick = (categoryId: string) => {

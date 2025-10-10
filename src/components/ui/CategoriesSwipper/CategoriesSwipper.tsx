@@ -43,13 +43,19 @@ export default function CategoriesSwipper({
         className={styles.wrapperBenfitsService}
         breakpoints={{
           320: {
-            slidesPerView: 1,
+            slidesPerView: 2,
             spaceBetween: 10,
           },
+
 
           640: {
             slidesPerView: 2,
             spaceBetween: 20,
+          },
+
+          992: {
+            slidesPerView: 3,
+            spaceBetween: 10,
           },
 
           1024: {
@@ -67,7 +73,8 @@ export default function CategoriesSwipper({
           <SwiperSlide className={styles.slideBenfitsService} key={book.id}>
             <Card
               sx={{
-                height: "100%",
+                width: "100%",
+
                 display: "flex",
                 flexDirection: "column",
                 transition: "transform 0.3s, box-shadow 0.3s",
@@ -79,26 +86,26 @@ export default function CategoriesSwipper({
               }}
             >
               {/* Badge promo pour certains livres */}
-              {index === 2 && (
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    backgroundColor: "#DC2626",
-                    color: "white",
-                    px: 2,
-                    py: 1,
-                    fontSize: "0.75rem",
-                    fontWeight: 700,
-                    zIndex: 1,
-                    clipPath: "polygon(0 0, 100% 0, 85% 100%, 0% 100%)",
-                    width: "120px",
-                  }}
-                >
-                  -33% OFF
-                </Box>
-              )}
+              {/*{index === 2 && (*/}
+              {/*  <Box*/}
+              {/*    sx={{*/}
+              {/*      position: "absolute",*/}
+              {/*      top: 0,*/}
+              {/*      left: 0,*/}
+              {/*      backgroundColor: "#DC2626",*/}
+              {/*      color: "white",*/}
+              {/*      px: 2,*/}
+              {/*      py: 1,*/}
+              {/*      fontSize: "0.75rem",*/}
+              {/*      fontWeight: 700,*/}
+              {/*      zIndex: 1,*/}
+              {/*      clipPath: "polygon(0 0, 100% 0, 85% 100%, 0% 100%)",*/}
+              {/*      width: "120px",*/}
+              {/*    }}*/}
+              {/*  >*/}
+              {/*    -33% OFF*/}
+              {/*  </Box>*/}
+              {/*)}*/}
 
               {/* Image de couverture */}
               <CardMedia
@@ -106,7 +113,7 @@ export default function CategoriesSwipper({
                 image={book.coverUrl}
                 alt={book.title}
                 sx={{
-                  height: 320,
+                  height: {xs: 200, sm: 300},
                   objectFit: "cover",
                 }}
               />
@@ -129,6 +136,8 @@ export default function CategoriesSwipper({
                 </Typography>
 
                 {/* Titre */}
+                <Stack direction="row"  width={"100%"} justifyContent={"space-between"}>
+
                 <Typography
                   variant="h6"
                   component="h2"
@@ -147,7 +156,14 @@ export default function CategoriesSwipper({
                 >
                   {book.title}
                 </Typography>
+                  <Rating
+                      value={getRandomRating()}
+                      readOnly
+                      size="small"
+                      sx={{ mb: 1 }}
+                  />
 
+                </Stack>
                 {/* Prix */}
                 <Box
                   sx={{
@@ -180,13 +196,6 @@ export default function CategoriesSwipper({
                   )}
                 </Box>
 
-                {/* Note */}
-                <Rating
-                  value={getRandomRating()}
-                  readOnly
-                  size="small"
-                  sx={{ mb: 1 }}
-                />
 
                 {/* Auteur */}
                 <Typography
