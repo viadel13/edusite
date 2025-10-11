@@ -5,6 +5,7 @@ import HeroSection from "@/components/section/HeroSection/HeroSection";
 
 import BenefitsService from "@/components/section/BenefitsService/BenefitsService";
 import CategoriesSection from "@/components/section/Categories/CategoriesSection";
+import SpecialProducts from "@/components/section/SpecialProducts/SpecialProducts";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <HeroSection />
       <BenefitsService />
       <CategoriesSection />
+      <SpecialProducts />
     </Stack>
   );
 }

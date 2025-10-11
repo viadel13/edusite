@@ -24,6 +24,7 @@ interface CategoryCache {
 
 interface BooksState {
   items: Book[];
+  itemsNoFilter: Book[];
   categories: Category[];
   selectedCategory: string | null;
   loading: boolean;
@@ -41,6 +42,7 @@ interface BooksState {
 // 2. ÉTAT INITIAL
 const initialState: BooksState = {
   items: [],
+  itemsNoFilter: [],
   categories: [],
   selectedCategory: null,
   loading: false,
@@ -60,6 +62,13 @@ const booksSlice = createSlice({
   reducers: {
     setSelectedBook: (state, action: PayloadAction<Book | null>) => {
       state.selectedBook = action.payload;
+    },
+    setBooksFromSnapshot: (state, action: PayloadAction<Book[]>) => {
+      state.items = action.payload;
+      state.itemsNoFilter = action.payload;
+      state.lastFetch = Date.now();
+      state.loading = false;
+      state.error = null;
     },
     setSelectedCategory: (state, action: PayloadAction<string | null>) => {
       state.selectedCategory = action.payload;
@@ -136,12 +145,12 @@ const booksSlice = createSlice({
       })
       .addCase(fetchAllBooks.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload;
-        state.lastFetch = Date.now();
+        // state.items = action.payload;
+        // state.lastFetch = Date.now();
       })
       .addCase(fetchAllBooks.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Erreur inconnue";
+        // state.error = action.payload || "Erreur inconnue";
       });
 
     // searchBooks
@@ -246,6 +255,7 @@ const booksSlice = createSlice({
 export const {
   setSelectedBook,
   setSelectedCategory,
+  setBooksFromSnapshot,
   setSearchQuery,
   clearError,
   clearBooks,
@@ -255,6 +265,8 @@ export const {
 
 // 8. SELECTORS
 export const selectAllBooks = (state: RootState) => state.books.items;
+export const selectItemsNoFilter = (state: RootState) =>
+  state.books.itemsNoFilter;
 export const selectBooksLoading = (state: RootState) => state.books.loading;
 export const selectBooksError = (state: RootState) => state.books.error;
 export const selectSelectedBook = (state: RootState) =>

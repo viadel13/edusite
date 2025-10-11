@@ -14,7 +14,8 @@ import {
   searchBooks as searchBooksFirestore,
   updateBook as updateBookFirestore,
 } from "@/lib/firebase/firestore";
-import type { RootState } from "@/store/store";
+import type { AppDispatch, RootState } from "@/store/store";
+import { setBooksFromSnapshot } from "@/store/slices/booksSlice";
 
 /**
  * Récupérer toutes les catégories
@@ -77,14 +78,35 @@ export const fetchBooksByCategory = createAsyncThunk<
 /**
  * Récupérer tous les livres
  */
+// export const fetchAllBooks = createAsyncThunk<
+//   void,
+//   void,
+//   { rejectValue: string }
+// >("books/fetchAllBooks", async (_, { rejectWithValue }) => {
+//   try {
+//     const books = await getAllBooks({ limit: 50, page: 1 });
+//     return books;
+//   } catch (error) {
+//     return rejectWithValue(
+//       error instanceof Error ? error.message : "Erreur récupération livres",
+//     );
+//   }
+// });
+
 export const fetchAllBooks = createAsyncThunk<
-  Book[],
+  () => void,
   void,
   { rejectValue: string }
->("books/fetchAllBooks", async (_, { rejectWithValue }) => {
+>("books/fetchAllBooks", async (_, { rejectWithValue, dispatch }) => {
   try {
-    const books = await getAllBooks({ limit: 50, page: 1 });
-    return books;
+    const unsubscribe = getAllBooks(
+      (books) => {
+        console.log("📥 Thunk: Données reçues, mise à jour Redux");
+        dispatch(setBooksFromSnapshot(books));
+      },
+      // { limit: 50, sortBy: "createdAt", sortOrder: "desc" },
+    );
+    return unsubscribe;
   } catch (error) {
     return rejectWithValue(
       error instanceof Error ? error.message : "Erreur récupération livres",

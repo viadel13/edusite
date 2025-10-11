@@ -15,6 +15,7 @@ import {
   Timestamp,
   DocumentSnapshot,
   QueryConstraint,
+  onSnapshot,
 } from "firebase/firestore";
 import { db } from "./config";
 import {
@@ -134,9 +135,39 @@ export async function createCategory(
 /**
  * Récupérer tous les livres
  */
-export async function getAllBooks(
+// export async function getAllBooks(
+//   options?: PaginationOptions,
+// ): Promise<Book[]> {
+//   try {
+//     const booksRef = collection(db, "books");
+//     const constraints: QueryConstraint[] = [
+//       orderBy(options?.sortBy || "createdAt", options?.sortOrder || "desc"),
+//     ];
+//
+//     if (options?.limit) {
+//       constraints.push(limit(options.limit));
+//     }
+//
+//     const q = query(booksRef, ...constraints);
+//     const snapshot = await getDocs(q);
+//
+//     return snapshot.docs.map(
+//       (doc) =>
+//         ({
+//           id: doc.id,
+//           ...doc.data(),
+//         }) as Book,
+//     );
+//   } catch (error) {
+//     console.error("Erreur récupération livres:", error);
+//     throw error;
+//   }
+// }
+
+export function getAllBooks(
+  callback: (books: Book[]) => void,
   options?: PaginationOptions,
-): Promise<Book[]> {
+): () => void {
   try {
     const booksRef = collection(db, "books");
     const constraints: QueryConstraint[] = [
@@ -148,17 +179,35 @@ export async function getAllBooks(
     }
 
     const q = query(booksRef, ...constraints);
-    const snapshot = await getDocs(q);
 
-    return snapshot.docs.map(
-      (doc) =>
-        ({
-          id: doc.id,
-          ...doc.data(),
-        }) as Book,
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        console.log(
+          "📚 onSnapshot déclenché - Nombre de documents:",
+          snapshot.docs.length,
+        );
+
+        const books = snapshot.docs.map(
+          (doc) =>
+            ({
+              id: doc.id,
+              ...doc.data(),
+            }) as Book,
+        );
+
+        callback(books);
+      },
+      (error) => {
+        console.error("❌ Erreur récupération livres en temps réel:", error);
+      },
     );
+
+    console.log("✅ Listener onSnapshot configuré avec succès");
+
+    return unsubscribe;
   } catch (error) {
-    console.error("Erreur récupération livres:", error);
+    console.error("❌ Erreur configuration listener:", error);
     throw error;
   }
 }

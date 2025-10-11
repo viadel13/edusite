@@ -14,7 +14,7 @@ export interface Category {
 }
 
 // Type pour un livre
-export interface Book {
+export type Book = {
   id: string;
   title: string;
   description: string;
@@ -36,7 +36,13 @@ export interface Book {
   featured: boolean;
   createdAt: Timestamp | Date;
   updatedAt: Timestamp | Date;
-}
+  tag?: "special";
+  salesCount?: number; // Nombre de ventes ou commandes pour le best-selling
+  isNew?: boolean; // Indiquer si le produit est nouveau
+} & (
+  | { tag: "special"; discount: number }
+  | { tag?: "special"; discount?: number }
+);
 
 // Type pour la vue dénormalisée (cache)
 export interface BooksByCategory {

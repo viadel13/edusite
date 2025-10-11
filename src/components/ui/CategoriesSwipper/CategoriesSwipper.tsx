@@ -11,12 +11,14 @@ import {
   CardContent,
   CardMedia,
   Chip,
+  IconButton,
   Rating,
   Stack,
   Typography,
 } from "@mui/material";
 import { Autoplay } from "swiper/modules";
 import { Book } from "@/types/firestore.type";
+import { Icon } from "@iconify/react";
 
 interface CategoriesSwipperProps {
   books: Book[];
@@ -37,7 +39,7 @@ export default function CategoriesSwipper({
         }}
         slidesPerView={3}
         modules={[Autoplay]}
-        className={styles.wrapperBenfitsService}
+        className={styles.wrapperCategorie}
         breakpoints={{
           320: {
             slidesPerView: 2,
@@ -66,7 +68,7 @@ export default function CategoriesSwipper({
         }}
       >
         {books.slice(0, 10).map((book, index: number) => (
-          <SwiperSlide className={styles.slideBenfitsService} key={book.id}>
+          <SwiperSlide className={styles.slideCategorie} key={book.id}>
             <Card
               sx={{
                 width: "100%",
@@ -211,22 +213,44 @@ export default function CategoriesSwipper({
 
               {/* Actions */}
               <CardActions sx={{ px: 2, pb: 2 }}>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  fullWidth
+                <IconButton
                   sx={{
-                    borderRadius: 0,
-                    borderWidth: 2,
-                    borderColor: "#D68B19",
-                    fontWeight: 600,
+                    width: 35,
+                    height: 35,
+                    borderRadius: 999,
+                    backgroundColor: "#D68B19",
                     "&:hover": {
-                      borderWidth: 2,
+                      backgroundColor: "black",
                     },
                   }}
                 >
-                  View Details
-                </Button>
+                  <Icon
+                    icon="iconamoon:eye-light"
+                    width="24"
+                    height="24"
+                    style={{
+                      color: "white",
+                    }}
+                  />
+                </IconButton>
+                <IconButton
+                  sx={{
+                    width: 35,
+                    height: 35,
+                    borderRadius: 999,
+                    backgroundColor: "#D68B19",
+                    "&:hover": {
+                      backgroundColor: "black",
+                    },
+                  }}
+                >
+                  <Icon
+                    icon="mage:basket"
+                    width="24"
+                    height="24"
+                    style={{ color: "white" }}
+                  />
+                </IconButton>
               </CardActions>
 
               {/* Sujets/Tags */}
