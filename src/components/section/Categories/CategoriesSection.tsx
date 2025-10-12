@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Box,
@@ -31,12 +31,23 @@ const CategoriesSection: React.FC = () => {
   const error = useAppSelector(selectBooksError);
   const selectedCategory = useAppSelector(selectSelectedCategory);
   const categoriesSuper = useAppSelector(selectCategoriesSuper);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   // Charger la première catégorie au montage
+  // useEffect(() => {
+  //   if (!selectedCategory) {
+  //     handleCategoryClick("biography");
+  //   } else {
+  //     setInitialized(true);
+  //   }
+  // }, []);
+
   useEffect(() => {
-    if (!selectedCategory) {
-      handleCategoryClick("biography");
-    }
+    const firstCategory = selectedCategory || "biography";
+    dispatch(setSelectedCategory(firstCategory));
+    dispatch(fetchBooksByCategory(firstCategory)).finally(() =>
+      setInitialLoading(false),
+    );
   }, []);
 
   useEffect(() => {
@@ -66,16 +77,6 @@ const CategoriesSection: React.FC = () => {
       >
         Top Categories
       </Typography>
-      {loading && (
-        <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
-          <CircularProgress
-            size={60}
-            sx={{
-              color: "#D68B19",
-            }}
-          />
-        </Box>
-      )}
 
       {/* Boutons des catégories */}
       <Box
@@ -89,8 +90,7 @@ const CategoriesSection: React.FC = () => {
       >
         {/* Grille des livres */}
 
-        {!loading &&
-          categoriesSuper.length > 0 &&
+        {categoriesSuper.length > 0 &&
           categoriesSuper.map((category) => (
             <Button
               key={category.id}
@@ -126,9 +126,26 @@ const CategoriesSection: React.FC = () => {
           ))}
       </Box>
 
-      {/* Message si aucun livre */}
-      {!loading && books.length === 0 && (
-        <Box sx={{ textAlign: "center" }}>
+      {/* Affichage des erreurs */}
+      {error && (
+        <Alert severity="error" sx={{ mb: 4 }}>
+          {error}
+        </Alert>
+      )}
+
+      {initialLoading || loading ? (
+        // 🟡 Toujours afficher le loader pendant le premier chargement ou un changement de catégorie
+        <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+          <CircularProgress
+            size={60}
+            sx={{
+              color: "#D68B19",
+            }}
+          />
+        </Box>
+      ) : books.length === 0 ? (
+        // 🔴 Aucun livre trouvé
+        <Box sx={{ textAlign: "center", py: 8 }}>
           <Typography
             variant="h6"
             sx={{
@@ -139,17 +156,8 @@ const CategoriesSection: React.FC = () => {
             Aucun livre trouvé dans cette catégorie.
           </Typography>
         </Box>
-      )}
-
-      {/* Affichage des erreurs */}
-      {error && (
-        <Alert severity="error" sx={{ mb: 4 }}>
-          {error}
-        </Alert>
-      )}
-
-      {/* Grille des livres */}
-      {!loading && books.length > 0 && (
+      ) : (
+        // 🟢 Liste des livres
         <CategoriesSwipper books={books} selectedCategory={selectedCategory} />
       )}
     </PageContainer>

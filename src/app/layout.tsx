@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Merriweather, Roboto } from "next/font/google";
+import { Merriweather } from "next/font/google";
 import "../assets/styles/globals.css";
 import Navbar from "@/components/layout/Navbar/Navbar";
 import { PageLoaderProvider } from "@/contexts/PageLoaderContext";
@@ -12,10 +12,10 @@ const merriweather = Merriweather({
   subsets: ["latin"],
 });
 
-const roboto = Roboto({
-  variable: "--font-roboto",
-  subsets: ["latin"],
-});
+// const roboto = Roboto({
+//   variable: "--font-roboto",
+//   subsets: ["latin"],
+// });
 
 export const metadata: Metadata = {
   title: "Edusite",
@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${merriweather.variable} ${roboto.variable}`}>
+      <body className={`${merriweather.variable}`}>
         <RootProvider>
           <PageLoaderProvider>
             <PageLoadEffect />
