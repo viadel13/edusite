@@ -91,6 +91,16 @@ function FilterProductSwipper({ allBooks }: SpecialProductSwipper) {
     return null;
   });
 
+  const pairs: Book[][] = [];
+  for (let i = 0; i < allBooks.length; i += 2) {
+    pairs.push(allBooks.slice(i, i + 2));
+  }
+
+  const slides: Book[][][] = [];
+  for (let i = 0; i < pairs.length; i += 3) {
+    slides.push(pairs.slice(i, i + 3));
+  }
+
   return (
     <>
       <Swiper
@@ -99,21 +109,71 @@ function FilterProductSwipper({ allBooks }: SpecialProductSwipper) {
           delay: 3500,
           disableOnInteraction: false,
         }}
-        slidesPerView={2}
-        modules={[Autoplay]}
+        slidesPerView={1} // Une slide complète à la fois
+        // modules={[Autoplay]}
         className={styles.wrapperFilterProductSwipper}
       >
-        {allBooks.map((book) => {
-          return (
-            <SwiperSlide
-              className={styles.slideFilterProductSwipper}
-              key={book.id}
-            >
-              {test}
-            </SwiperSlide>
-          );
-        })}
+        {slides.map((slidePairs, slideIndex) => (
+          <SwiperSlide
+            className={styles.slideFilterProductSwipper}
+            key={slideIndex}
+          >
+            <Stack spacing={8}>
+              {slidePairs.map((pair, pairIndex) => (
+                <Grid container key={pairIndex} spacing={8}>
+                  {pair.map((book) => (
+                    <Grid size={{ xs: 12, sm: 6, md: 6 }} key={book.id}>
+                      <Stack direction="row" spacing={2}>
+                        <Stack>
+                          <Image
+                            alt="coverBook"
+                            src={book.coverUrl}
+                            width={5000}
+                            height={5000}
+                            style={{
+                              height: "90px",
+                              width: "90px",
+                              objectFit: "cover",
+                            }}
+                            draggable={false}
+                          />
+                        </Stack>
+
+                        <Stack alignSelf="center">
+                          <Typography>{book.author}</Typography>
+                          <Typography>{book.title}</Typography>
+                          <Typography>{book.price} FRCFA</Typography>
+                        </Stack>
+                      </Stack>
+                    </Grid>
+                  ))}
+                </Grid>
+              ))}
+            </Stack>
+          </SwiperSlide>
+        ))}
       </Swiper>
+      {/*<Swiper*/}
+      {/*  watchSlidesProgress={true}*/}
+      {/*  autoplay={{*/}
+      {/*    delay: 3500,*/}
+      {/*    disableOnInteraction: false,*/}
+      {/*  }}*/}
+      {/*  slidesPerView={2}*/}
+      {/*  modules={[Autoplay]}*/}
+      {/*  className={styles.wrapperFilterProductSwipper}*/}
+      {/*>*/}
+      {/*  {allBooks.map((book) => {*/}
+      {/*    return (*/}
+      {/*      <SwiperSlide*/}
+      {/*        className={styles.slideFilterProductSwipper}*/}
+      {/*        key={book.id}*/}
+      {/*      >*/}
+      {/*        {test}*/}
+      {/*      </SwiperSlide>*/}
+      {/*    );*/}
+      {/*  })}*/}
+      {/*</Swiper>*/}
     </>
   );
 }

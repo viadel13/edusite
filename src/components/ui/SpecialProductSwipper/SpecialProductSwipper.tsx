@@ -22,6 +22,7 @@ function SpecialProductSwipper({ allBooks }: SpecialProductSwipper) {
         disableOnInteraction: false,
       }}
       slidesPerView={1}
+      spaceBetween={20}
       modules={[Autoplay]}
       className={styles.wrapperSpecialProduct}
     >

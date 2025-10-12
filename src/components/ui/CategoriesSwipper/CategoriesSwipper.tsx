@@ -42,6 +42,11 @@ export default function CategoriesSwipper({
         className={styles.wrapperCategorie}
         breakpoints={{
           320: {
+            slidesPerView: 1,
+            spaceBetween: 10,
+          },
+
+          370: {
             slidesPerView: 2,
             spaceBetween: 10,
           },
@@ -134,11 +139,7 @@ export default function CategoriesSwipper({
                 </Typography>
 
                 {/* Titre */}
-                <Stack
-                  direction="row"
-                  width={"100%"}
-                  justifyContent={"space-between"}
-                >
+                <Stack direction="column" width={"100%"} pb={2}>
                   <Typography
                     variant="h6"
                     component="h2"
@@ -146,10 +147,6 @@ export default function CategoriesSwipper({
                     sx={{
                       fontSize: "1rem",
                       fontWeight: 400,
-                      lineHeight: 1.4,
-                      mb: 1,
-                      minHeight: "2.8em",
-                      display: "-webkit-box",
                       WebkitLineClamp: 2,
                       WebkitBoxOrient: "vertical",
                       overflow: "hidden",

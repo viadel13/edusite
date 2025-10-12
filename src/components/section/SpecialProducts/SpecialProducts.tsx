@@ -25,16 +25,32 @@ function SpecialProducts() {
 
   return (
     <PageContainer mt={{ xs: 5, sm: 5, md: 15 }}>
-      <Grid container spacing={2}>
-        <Grid size={{ xs: 12, sm: 12, md: 6 }}>
-          <Typography fontSize={{ xs: 30 }} mb={10}>
+      <Grid container spacing={5}>
+        <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }}>
+          <Typography
+            mb={{ xs: 5, sm: 10 }}
+            sx={{
+              fontSize: { xs: "1.4rem", sm: "1.7rem", md: "2.2rem" },
+            }}
+          >
             Produits spéciaux
           </Typography>
           <SpecialProductSwipper allBooks={allBooks} />
         </Grid>
-        <Grid size={{ xs: 6, sm: 12, md: 6 }}>
-          <Stack direction={"row"} alignItems={"center"} spacing={3} mb={10}>
-            <Typography fontSize={{ xs: 30 }}>Magasiner par</Typography>
+        <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }}>
+          <Stack
+            direction={"row"}
+            alignItems={"center"}
+            spacing={3}
+            mb={{ xs: 5, sm: 10 }}
+          >
+            <Typography
+              sx={{
+                fontSize: { xs: "1.4rem", sm: "1.7rem", md: "2.2rem" },
+              }}
+            >
+              Trier
+            </Typography>
             <Box sx={{ minWidth: 120 }}>
               <NativeSelect
                 defaultValue={30}
@@ -42,7 +58,9 @@ function SpecialProducts() {
                   name: "age",
                   id: "uncontrolled-native",
                 }}
-                sx={{ fontSize: 30 }}
+                sx={{
+                  fontSize: { xs: "1.2rem", sm: "1.7rem", md: "1.8rem" },
+                }}
               >
                 <option
                   value={10}
@@ -63,7 +81,7 @@ function SpecialProducts() {
               </NativeSelect>
             </Box>
           </Stack>
-          {/*<FilterProductSwipper allBooks={allBooks} />*/}
+          <FilterProductSwipper allBooks={allBooks} />
         </Grid>
       </Grid>
     </PageContainer>

@@ -68,7 +68,7 @@ export default function HeroSwipper() {
                     fontWeight: "bold",
                     color: "#111111",
                     fontSize: {
-                      xs: "1.8em",
+                      xs: "1.5em",
                       sm: "2.2em",
                       md: "2.2em",
                       lg: "2.5em",
@@ -80,7 +80,7 @@ export default function HeroSwipper() {
                 <Stack alignItems={"start"} spacing={{ xs: 4, sm: 4, md: 8 }}>
                   <Typography
                     sx={{
-                      fontSize: { xs: 18 },
+                      fontSize: { xs: 16, sm: 18 },
                       color: "#495057",
                     }}
                   >
@@ -93,8 +93,9 @@ export default function HeroSwipper() {
                     sx={{
                       backgroundColor: "#D68B19",
                       color: "white",
-                      padding: "12px 35px",
+                      padding: { xs: "5px 10px", sm: "12px 35px" },
                       textTransform: "uppercase",
+                      fontSize: { xs: 12, sm: 15 },
                     }}
                   >
                     SHOP NOW
@@ -158,7 +159,7 @@ export default function HeroSwipper() {
                     fontWeight: "bold",
                     color: "#111111",
                     fontSize: {
-                      xs: "1.8em",
+                      xs: "1.5em",
                       sm: "2.2em",
                       md: "2.2em",
                       lg: "2.5em",
@@ -170,7 +171,7 @@ export default function HeroSwipper() {
                 <Stack alignItems={"start"} spacing={{ xs: 4, sm: 4, md: 8 }}>
                   <Typography
                     sx={{
-                      fontSize: { xs: 18 },
+                      fontSize: { xs: 16, sm: 18 },
                       color: "#495057",
                     }}
                   >
@@ -183,8 +184,9 @@ export default function HeroSwipper() {
                     sx={{
                       backgroundColor: "#D68B19",
                       color: "white",
-                      padding: "12px 35px",
+                      padding: { xs: "5px 10px", sm: "12px 35px" },
                       textTransform: "uppercase",
+                      fontSize: { xs: 12, sm: 15 },
                     }}
                   >
                     SHOP NOW

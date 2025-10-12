@@ -6,6 +6,7 @@ import {
   Button,
   CircularProgress,
   Alert,
+  Tabs,
 } from "@mui/material";
 
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
@@ -19,6 +20,8 @@ import {
 } from "@/store/slices/booksSlice";
 import PageContainer from "@/components/layout/PageContainer/PageContainer";
 import CategoriesSwipper from "@/components/ui/CategoriesSwipper/CategoriesSwipper";
+import Tab from "@mui/material/Tab";
+
 import {
   fetchBooksByCategory,
   fetchCategoriesSuper,
@@ -32,6 +35,7 @@ const CategoriesSection: React.FC = () => {
   const selectedCategory = useAppSelector(selectSelectedCategory);
   const categoriesSuper = useAppSelector(selectCategoriesSuper);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [value, setValue] = useState(0);
 
   // Charger la première catégorie au montage
   // useEffect(() => {
@@ -54,6 +58,10 @@ const CategoriesSection: React.FC = () => {
     dispatch(fetchCategoriesSuper());
   }, [dispatch]);
 
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
   // Gérer le clic sur une catégorie
   const handleCategoryClick = (categoryId: string) => {
     dispatch(setSelectedCategory(categoryId));
@@ -71,7 +79,7 @@ const CategoriesSection: React.FC = () => {
         sx={{
           fontWeight: 300,
           mb: 6,
-          fontSize: { xs: "2rem", md: "3rem" },
+          fontSize: { xs: "1.4rem", sm: "1.7rem", md: "2.2rem" },
           letterSpacing: "0.05em",
         }}
       >
@@ -88,42 +96,22 @@ const CategoriesSection: React.FC = () => {
           flexWrap: "wrap",
         }}
       >
-        {/* Grille des livres */}
-
-        {categoriesSuper.length > 0 &&
-          categoriesSuper.map((category) => (
-            <Button
-              key={category.id}
-              variant={
-                selectedCategory === category.id ? "contained" : "outlined"
-              }
-              onClick={() => handleCategoryClick(category.id)}
-              sx={{
-                fontSize: "0.9rem",
-
-                letterSpacing: "0.05em",
-                borderRadius: 0,
-                borderWidth: 2,
-                backgroundColor:
-                  selectedCategory === category.id
-                    ? category.color
-                    : "transparent",
-                borderColor:
-                  selectedCategory === category.id ? category.color : "#E5E7EB",
-                color: selectedCategory === category.id ? "white" : "#374151",
-                "&:hover": {
-                  backgroundColor:
-                    selectedCategory === category.id
-                      ? category.color
-                      : "#F9FAFB",
-                  borderColor: category.color,
-                  borderWidth: 2,
-                },
-              }}
-            >
-              {category.name}
-            </Button>
-          ))}
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          aria-label="scrollable auto tabs example"
+        >
+          {categoriesSuper.length > 0 &&
+            categoriesSuper.map((category) => (
+              <Tab
+                key={category.id}
+                label={category.name}
+                onClick={() => handleCategoryClick(category.id)}
+              />
+            ))}
+        </Tabs>
       </Box>
 
       {/* Affichage des erreurs */}
@@ -134,10 +122,9 @@ const CategoriesSection: React.FC = () => {
       )}
 
       {initialLoading || loading ? (
-        // 🟡 Toujours afficher le loader pendant le premier chargement ou un changement de catégorie
         <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
           <CircularProgress
-            size={60}
+            size={40}
             sx={{
               color: "#D68B19",
             }}
