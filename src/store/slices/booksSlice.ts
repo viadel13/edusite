@@ -23,35 +23,88 @@ interface CategoryCache {
 }
 
 interface BooksState {
-  items: Book[];
-  itemsNoFilter: Book[];
-  categories: Category[];
+  items: Array<{
+    books: Book[];
+    booksByIdCategorie: Book[];
+    searchBooks: Book[];
+    categories: Category[];
+    superCategories: Category[];
+    bookById: Book[];
+    featuredBooks: Book[];
+    loadingBooks: boolean;
+    loadingBooksByIdCategorie: boolean;
+    loadingSearchBooks: boolean;
+    loadingCategories: boolean;
+    loadingSuperCategories: boolean;
+    loadingBookById: boolean;
+    loadingFeaturedBooks: boolean;
+    errorBookById: string | null;
+    errorBooks: string | null;
+    errorBooksByIdCategorie: string | null;
+    errorSearchBooks: string | null;
+    errorCategories: string | null;
+    errorFeaturedBooks: string | null;
+    errorSuperCategories: string | null;
+  }>;
+  itemsCRUD: Array<{
+    loaderCreateBook: boolean;
+    loaderUpdateBook: boolean;
+    loaderDeleteBook: boolean;
+    errorUpdateBook: string | null;
+    errorCreateBook: string | null;
+    errorDeleteBook: string | null;
+  }>;
+
   selectedCategory: string | null;
   loading: boolean;
-  error: string | null;
   selectedBook: Book | null;
   searchQuery: string;
-  featuredBooks: Book[];
-  cache: {
-    [categoryId: string]: CategoryCache;
-  };
   lastFetch: number | null;
-  superCategories: Category[];
 }
 
 // 2. ÉTAT INITIAL
 const initialState: BooksState = {
-  items: [],
-  itemsNoFilter: [],
-  categories: [],
+  items: [
+    {
+      books: [],
+      booksByIdCategorie: [],
+      searchBooks: [],
+      categories: [],
+      superCategories: [],
+      bookById: [],
+      featuredBooks: [],
+      loadingBooksByIdCategorie: false,
+      loadingBooks: false,
+      loadingSearchBooks: false,
+      loadingCategories: false,
+      loadingSuperCategories: false,
+      loadingBookById: false,
+      loadingFeaturedBooks: false,
+      errorBooks: null,
+      errorSearchBooks: null,
+      errorCategories: null,
+      errorSuperCategories: null,
+      errorBookById: null,
+      errorFeaturedBooks: null,
+      errorBooksByIdCategorie: null,
+    },
+  ],
+
+  itemsCRUD: [
+    {
+      loaderCreateBook: false,
+      errorCreateBook: null,
+      loaderUpdateBook: false,
+      errorUpdateBook: null,
+      loaderDeleteBook: false,
+      errorDeleteBook: null,
+    },
+  ],
+
   selectedCategory: null,
   loading: false,
-  error: null,
   selectedBook: null,
   searchQuery: "",
-  featuredBooks: [],
-  cache: {},
-  superCategories: [],
   lastFetch: null,
 };
 
@@ -64,11 +117,11 @@ const booksSlice = createSlice({
       state.selectedBook = action.payload;
     },
     setBooksFromSnapshot: (state, action: PayloadAction<Book[]>) => {
-      state.items = action.payload;
-      state.itemsNoFilter = action.payload;
-      state.lastFetch = Date.now();
-      state.loading = false;
-      state.error = null;
+      state.items.forEach((item) => {
+        item.books = action.payload;
+        item.loadingBooks = false;
+        item.errorBooks = null;
+      });
     },
     setSelectedCategory: (state, action: PayloadAction<string | null>) => {
       state.selectedCategory = action.payload;
@@ -77,176 +130,222 @@ const booksSlice = createSlice({
       state.searchQuery = action.payload;
     },
     clearError: (state) => {
-      state.error = null;
+      state.items.forEach((item) => {
+        item.errorBooks = null;
+        item.errorBooksByIdCategorie = null;
+      });
     },
     clearBooks: (state) => {
       state.items = [];
-    },
-    invalidateCache: (state, action: PayloadAction<string>) => {
-      delete state.cache[action.payload];
-    },
-    clearAllCache: (state) => {
-      state.cache = {};
     },
   },
   extraReducers: (builder) => {
     // fetchCategories
     builder
       .addCase(fetchCategories.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.items.forEach((item) => {
+          item.loadingCategories = true;
+          item.errorCategories = null;
+        });
       })
       .addCase(fetchCategories.fulfilled, (state, action) => {
-        state.loading = false;
-        state.categories = action.payload;
+        state.items.forEach((item) => {
+          item.loadingCategories = false;
+          item.categories = action.payload;
+        });
       })
       .addCase(fetchCategories.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Erreur inconnue";
+        state.items.forEach((item) => {
+          item.loadingCategories = false;
+          item.errorCategories = action.payload || "Erreur inconnue";
+        });
       });
 
     // fetchCategoriesSuper
     builder
       .addCase(fetchCategoriesSuper.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.items.forEach((item) => {
+          item.loadingSuperCategories = true;
+          item.errorSuperCategories = null;
+        });
       })
       .addCase(fetchCategoriesSuper.fulfilled, (state, action) => {
-        state.loading = false;
-        state.superCategories = action.payload;
+        state.items.forEach((item) => {
+          item.loadingSuperCategories = false;
+          item.superCategories = action.payload;
+        });
       })
       .addCase(fetchCategoriesSuper.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Erreur inconnue";
+        state.items.forEach((item) => {
+          item.loadingSuperCategories = false;
+          item.errorSuperCategories = action.payload || "Erreur inconnue";
+        });
       });
 
     // fetchBooksByCategory
     builder
       .addCase(fetchBooksByCategory.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.items.forEach((item) => {
+          item.loadingBooksByIdCategorie = true;
+          item.errorBooksByIdCategorie = null;
+        });
       })
       .addCase(fetchBooksByCategory.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = action.payload;
+        state.items.forEach((item) => {
+          item.loadingBooksByIdCategorie = false;
+          item.booksByIdCategorie = action.payload;
+        });
 
         state.lastFetch = Date.now();
       })
       .addCase(fetchBooksByCategory.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Erreur inconnue";
+        state.items.forEach((item) => {
+          item.loadingBooksByIdCategorie = false;
+          item.errorBooksByIdCategorie = action.payload || "Erreur inconnue";
+        });
       });
 
     // fetchAllBooks
     builder
       .addCase(fetchAllBooks.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.items.forEach((item) => {
+          item.loadingBooks = true;
+          item.errorBooks = null;
+        });
       })
       .addCase(fetchAllBooks.fulfilled, (state, action) => {
-        state.loading = false;
-        // state.items = action.payload;
-        // state.lastFetch = Date.now();
+        state.items.forEach((item) => {
+          item.loadingBooks = false;
+        });
       })
       .addCase(fetchAllBooks.rejected, (state, action) => {
-        state.loading = false;
-        // state.error = action.payload || "Erreur inconnue";
+        state.items.forEach((item) => {
+          item.loadingBooks = false;
+          item.errorBooks = action.payload || "Erreur inconnue";
+        });
       });
 
     // searchBooks
     builder
       .addCase(searchBooks.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.items.forEach((item) => {
+          item.loadingSearchBooks = true;
+          item.errorSearchBooks = null;
+        });
       })
       .addCase(searchBooks.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = action.payload;
+        state.items.forEach((item) => {
+          item.loadingSearchBooks = false;
+          item.searchBooks = action.payload;
+        });
       })
       .addCase(searchBooks.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Erreur inconnue";
+        state.items.forEach((item) => {
+          item.loadingSearchBooks = false;
+          item.errorSearchBooks = action.payload || "Erreur inconnue";
+        });
       });
 
     // fetchBookById
     builder
       .addCase(fetchBookById.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.items.forEach((item) => {
+          item.loadingBookById = true;
+          item.errorBookById = null;
+        });
       })
       .addCase(fetchBookById.fulfilled, (state, action) => {
-        state.loading = false;
-        state.selectedBook = action.payload;
+        state.items.forEach((item) => {
+          item.loadingBookById = false;
+          item.bookById = [action.payload];
+        });
       })
       .addCase(fetchBookById.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Erreur inconnue";
-      });
-
-    // createBook
-    builder
-      .addCase(createBook.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(createBook.fulfilled, (state) => {
-        state.loading = false;
-        // Invalider le cache après création
-        state.cache = {};
-      })
-      .addCase(createBook.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Erreur inconnue";
-      });
-
-    // updateBook
-    builder
-      .addCase(updateBook.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateBook.fulfilled, (state) => {
-        state.loading = false;
-        // Invalider le cache après mise à jour
-        state.cache = {};
-      })
-      .addCase(updateBook.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Erreur inconnue";
-      });
-
-    // deleteBook
-    builder
-      .addCase(deleteBook.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(deleteBook.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = state.items.filter(
-          (book: any) => book.id !== action.payload,
-        );
-        // Invalider le cache après suppression
-        state.cache = {};
-      })
-      .addCase(deleteBook.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Erreur inconnue";
+        state.items.forEach((item) => {
+          item.loadingBookById = false;
+          item.errorBookById = action.payload || "Erreur inconnue";
+        });
       });
 
     // fetchFeaturedBooks
     builder
       .addCase(fetchFeaturedBooks.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.items.forEach((item) => {
+          item.loadingFeaturedBooks = true;
+          item.errorFeaturedBooks = null;
+        });
       })
       .addCase(fetchFeaturedBooks.fulfilled, (state, action) => {
-        state.loading = false;
-        state.featuredBooks = action.payload;
+        state.items.forEach((item) => {
+          item.loadingFeaturedBooks = false;
+          item.featuredBooks = action.payload;
+        });
       })
       .addCase(fetchFeaturedBooks.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Erreur inconnue";
+        state.items.forEach((item) => {
+          item.loadingFeaturedBooks = false;
+          item.errorFeaturedBooks = action.payload || "Erreur inconnue";
+        });
+      });
+
+    // createBook
+    builder
+      .addCase(createBook.pending, (state) => {
+        state.itemsCRUD.forEach((item) => {
+          item.loaderCreateBook = true;
+          item.errorCreateBook = null;
+        });
+      })
+      .addCase(createBook.fulfilled, (state) => {
+        state.itemsCRUD.forEach((item) => {
+          item.loaderCreateBook = false;
+        });
+      })
+      .addCase(createBook.rejected, (state, action) => {
+        state.itemsCRUD.forEach((item) => {
+          item.loaderCreateBook = false;
+          item.errorCreateBook = action.payload || "Erreur inconnue";
+        });
+      });
+
+    // updateBook
+    builder
+      .addCase(updateBook.pending, (state) => {
+        state.itemsCRUD.forEach((item) => {
+          item.loaderUpdateBook = true;
+          item.errorUpdateBook = null;
+        });
+      })
+      .addCase(updateBook.fulfilled, (state) => {
+        state.itemsCRUD.forEach((item) => {
+          item.loaderUpdateBook = false;
+        });
+      })
+      .addCase(updateBook.rejected, (state, action) => {
+        state.itemsCRUD.forEach((item) => {
+          item.loaderUpdateBook = false;
+          item.errorUpdateBook = action.payload || "Erreur inconnue";
+        });
+      });
+
+    // deleteBook
+    builder
+      .addCase(deleteBook.pending, (state) => {
+        state.itemsCRUD.forEach((item) => {
+          item.loaderDeleteBook = true;
+          item.errorDeleteBook = null;
+        });
+      })
+      .addCase(deleteBook.fulfilled, (state) => {
+        state.itemsCRUD.forEach((item) => {
+          item.loaderDeleteBook = false;
+        });
+      })
+      .addCase(deleteBook.rejected, (state, action) => {
+        state.itemsCRUD.forEach((item) => {
+          item.loaderDeleteBook = false;
+          item.errorDeleteBook = action.payload || "Erreur inconnue";
+        });
       });
   },
 });
@@ -259,28 +358,29 @@ export const {
   setSearchQuery,
   clearError,
   clearBooks,
-  invalidateCache,
-  clearAllCache,
 } = booksSlice.actions;
 
 // 8. SELECTORS
-export const selectAllBooks = (state: RootState) => state.books.items;
-export const selectItemsNoFilter = (state: RootState) =>
-  state.books.itemsNoFilter;
-export const selectBooksLoading = (state: RootState) => state.books.loading;
-export const selectBooksError = (state: RootState) => state.books.error;
-export const selectSelectedBook = (state: RootState) =>
-  state.books.selectedBook;
-export const selectCategories = (state: RootState) => state.books.categories;
+export const selectAllBooks = (state: RootState) => state.books.items[0].books;
+export const selectBooksByIdCategorie = (state: RootState) =>
+  state.books.items[0].booksByIdCategorie;
 export const selectCategoriesSuper = (state: RootState) =>
-  state.books.superCategories;
+  state.books.items[0].superCategories;
+
+export const selectBooksLoading = (state: RootState) =>
+  state.books.items[0].loadingBooks;
+export const selectBooksloadingCatetogerie = (state: RootState) =>
+  state.books.items[0].loadingCategories;
+export const selectloadingBooksByIdCategorie = (state: RootState) =>
+  state.books.items[0].loadingBooksByIdCategorie;
 export const selectSelectedCategory = (state: RootState) =>
   state.books.selectedCategory;
-export const selectSearchQuery = (state: RootState) => state.books.searchQuery;
-export const selectFeaturedBooks = (state: RootState) =>
-  state.books.featuredBooks;
-export const selectCacheStatus = (state: RootState) => state.books.cache;
-export const selectLastFetch = (state: RootState) => state.books.lastFetch;
+
+export const selectBooksError = (state: RootState) =>
+  state.books.items[0].errorBooks;
+
+export const selectErrorBooksByIdCategorie = (state: RootState) =>
+  state.books.items[0].errorBooksByIdCategorie;
 
 // 9. REDUCER
 export default booksSlice.reducer;

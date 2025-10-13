@@ -4,101 +4,68 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Book } from "@/types/firestore.type";
 import Grid from "@mui/material/Grid";
 import Image from "next/image";
-import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { Icon } from "@iconify/react";
+import { useEffect, useLayoutEffect, useState } from "react";
 
 interface SpecialProductSwipper {
   allBooks: Book[];
+  selectedOption: number;
 }
 
-function FilterProductSwipper({ allBooks }: SpecialProductSwipper) {
-  const bestSellingBooks = allBooks.filter((book) => {
-    const salesThreshold = 1000; // Seuil des ventes
-    const ratingThreshold = 4.5; // Note minimale
-    const reviewCountThreshold = 50; // Nombre minimal de critiques
+function FilterProductSwipper({
+  allBooks,
+  selectedOption,
+}: SpecialProductSwipper) {
+  const theme = useTheme();
+  const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // xs et sm
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
-    return (
-      (book?.salesCount ?? 0) >= salesThreshold &&
-      book.rating >= ratingThreshold &&
-      book.reviewCount >= reviewCountThreshold
-    );
-  });
+  let linesPerSlide = 3; // par défaut desktop
+  if (isMobile) {
+    linesPerSlide = 2; // mobile et tablette → 2 lignes par slide
+  }
 
-  const test = allBooks.map((book, index) => {
-    // Créer des paires de livres en prenant 2 livres à la fois
-    if (index % 2 === 0) {
-      const nextBook = allBooks[index + 1]; // Livre suivant pour faire une paire
+  useLayoutEffect(() => {
+    console.log("lancer");
+    setFilteredBooks([]);
+    const bestSellingBooks = allBooks.filter((book) => {
+      const salesThreshold = 1000; // Seuil des ventes
+      const ratingThreshold = 4.5; // Note minimale
+      const reviewCountThreshold = 50; // Nombre minimal de critiques
+
       return (
-        <Grid container spacing={2} key={index} mb={4}>
-          {/* Premier livre de la paire */}
-          <Grid size={{ xs: 6 }}>
-            <Stack direction={"row"} spacing={2}>
-              <Stack>
-                <Image
-                  alt={"coverBook"}
-                  src={book.coverUrl}
-                  width={5000}
-                  height={5000}
-                  style={{
-                    height: "90px",
-                    width: "90px",
-                    objectFit: "cover",
-                  }}
-                  objectFit={"cover"}
-                  draggable={false}
-                />
-              </Stack>
-
-              <Stack alignSelf={"center"}>
-                <Typography>{book.author}</Typography>
-                <Typography>{book.title}</Typography>
-                <Typography>{book.price} FRCFA</Typography>
-              </Stack>
-            </Stack>
-          </Grid>
-
-          {/* Deuxième livre de la paire */}
-          {nextBook && (
-            <Grid size={{ xs: 6 }}>
-              <Stack direction={"row"} spacing={2}>
-                <Stack>
-                  <Image
-                    alt={"coverBook"}
-                    src={nextBook.coverUrl}
-                    width={5000}
-                    height={5000}
-                    style={{
-                      height: "90px",
-                      width: "90px",
-                      objectFit: "cover",
-                    }}
-                    objectFit={"cover"}
-                    draggable={false}
-                  />
-                </Stack>
-
-                <Stack alignSelf={"center"}>
-                  <Typography>{nextBook.author}</Typography>
-                  <Typography>{nextBook.title}</Typography>
-                  <Typography>{nextBook.price} FRCFA</Typography>
-                </Stack>
-              </Stack>
-            </Grid>
-          )}
-        </Grid>
+        (book?.salesCount ?? 0) >= salesThreshold &&
+        book.rating >= ratingThreshold &&
+        book.reviewCount >= reviewCountThreshold
       );
-    }
-    return null;
-  });
+    });
+
+    const newProducts = allBooks.filter((i) => i.isNew);
+
+    selectedOption === 1
+      ? setFilteredBooks(bestSellingBooks)
+      : setFilteredBooks(newProducts);
+  }, [selectedOption]);
+  console.log(filteredBooks);
 
   const pairs: Book[][] = [];
-  for (let i = 0; i < allBooks.length; i += 2) {
-    pairs.push(allBooks.slice(i, i + 2));
+  for (let i = 0; i < filteredBooks.length; i += 2) {
+    pairs.push(filteredBooks.slice(i, i + 2));
   }
 
   const slides: Book[][][] = [];
-  for (let i = 0; i < pairs.length; i += 3) {
-    slides.push(pairs.slice(i, i + 3));
+  for (let i = 0; i < pairs.length; i += linesPerSlide) {
+    slides.push(pairs.slice(i, i + linesPerSlide));
   }
 
   return (
@@ -118,12 +85,12 @@ function FilterProductSwipper({ allBooks }: SpecialProductSwipper) {
             className={styles.slideFilterProductSwipper}
             key={slideIndex}
           >
-            <Stack spacing={8}>
+            <Stack spacing={6}>
               {slidePairs.map((pair, pairIndex) => (
-                <Grid container key={pairIndex} spacing={8}>
+                <Grid container key={pairIndex} spacing={6}>
                   {pair.map((book) => (
                     <Grid size={{ xs: 12, sm: 6, md: 6 }} key={book.id}>
-                      <Stack direction="row" spacing={2}>
+                      <Stack direction="row" spacing={2} position={"relative"}>
                         <Stack>
                           <Image
                             alt="coverBook"
@@ -139,10 +106,32 @@ function FilterProductSwipper({ allBooks }: SpecialProductSwipper) {
                           />
                         </Stack>
 
-                        <Stack alignSelf="center">
-                          <Typography>{book.author}</Typography>
+                        <Stack
+                          alignSelf="end"
+                          spacing={0.3}
+                          sx={{
+                            position: "relative",
+                            right: 0,
+                            left: 0,
+                            top: 20,
+                          }}
+                        >
+                          <Typography color={"#6c757d"}>
+                            {book.author}
+                          </Typography>
                           <Typography>{book.title}</Typography>
-                          <Typography>{book.price} FRCFA</Typography>
+                          <Typography color={"#6c757d"}>
+                            {book.price} FRCFA
+                          </Typography>
+                          <Typography
+                            sx={{
+                              textTransform: "uppercase",
+                              textDecoration: "underline",
+                              fontSize: 12,
+                            }}
+                          >
+                            ajouter au panier
+                          </Typography>
                         </Stack>
                       </Stack>
                     </Grid>
@@ -153,27 +142,6 @@ function FilterProductSwipper({ allBooks }: SpecialProductSwipper) {
           </SwiperSlide>
         ))}
       </Swiper>
-      {/*<Swiper*/}
-      {/*  watchSlidesProgress={true}*/}
-      {/*  autoplay={{*/}
-      {/*    delay: 3500,*/}
-      {/*    disableOnInteraction: false,*/}
-      {/*  }}*/}
-      {/*  slidesPerView={2}*/}
-      {/*  modules={[Autoplay]}*/}
-      {/*  className={styles.wrapperFilterProductSwipper}*/}
-      {/*>*/}
-      {/*  {allBooks.map((book) => {*/}
-      {/*    return (*/}
-      {/*      <SwiperSlide*/}
-      {/*        className={styles.slideFilterProductSwipper}*/}
-      {/*        key={book.id}*/}
-      {/*      >*/}
-      {/*        {test}*/}
-      {/*      </SwiperSlide>*/}
-      {/*    );*/}
-      {/*  })}*/}
-      {/*</Swiper>*/}
     </>
   );
 }

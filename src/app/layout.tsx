@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Merriweather } from "next/font/google";
+
 import "../assets/styles/globals.css";
 import Navbar from "@/components/layout/Navbar/Navbar";
 import { PageLoaderProvider } from "@/contexts/PageLoaderContext";
@@ -7,19 +7,9 @@ import PageLoadEffect from "@/components/common/PageLoadEffect/PageLoadEffect";
 import GlobalLoader from "@/components/layout/GlobalLoader/GlobalLoader";
 import { RootProvider } from "@/providers/RootProvider";
 
-const merriweather = Merriweather({
-  variable: "--font-merriweather",
-  subsets: ["latin"],
-});
-
-// const roboto = Roboto({
-//   variable: "--font-roboto",
-//   subsets: ["latin"],
-// });
-
 export const metadata: Metadata = {
   title: "Edusite",
-  description: "Browse and discover a world of books",
+  description: "Parcourez et découvrez un monde de livres",
 };
 
 export default function RootLayout({
@@ -29,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${merriweather.variable}`}>
+      <body>
         <RootProvider>
           <PageLoaderProvider>
             <PageLoadEffect />

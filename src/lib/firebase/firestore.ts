@@ -218,13 +218,9 @@ export function getAllBooks(
 export async function getBooksByCategory(categoryId: string): Promise<Book[]> {
   try {
     // Sinon, requête normale
-    console.log("🔍 Requête Firestore normale");
+    console.log(categoryId);
     const booksRef = collection(db, "books");
-    const q = query(
-      booksRef,
-      where("categoryId", "==", categoryId),
-      orderBy("createdAt", "desc"),
-    );
+    const q = query(booksRef, where("categoryId", "==", categoryId));
 
     const snapshot = await getDocs(q);
     const books = snapshot.docs.map(
@@ -234,9 +230,6 @@ export async function getBooksByCategory(categoryId: string): Promise<Book[]> {
           ...doc.data(),
         }) as Book,
     );
-
-    // Mettre à jour le cache
-    await updateCategoryCache(categoryId, books);
 
     return books;
   } catch (error) {

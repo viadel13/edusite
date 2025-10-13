@@ -12,9 +12,13 @@ import {
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import {
   selectAllBooks,
+  selectBooksByIdCategorie,
   selectBooksError,
   selectBooksLoading,
+  selectBooksloadingCatetogerie,
   selectCategoriesSuper,
+  selectErrorBooksByIdCategorie,
+  selectloadingBooksByIdCategorie,
   selectSelectedCategory,
   setSelectedCategory,
 } from "@/store/slices/booksSlice";
@@ -29,22 +33,15 @@ import {
 
 const CategoriesSection: React.FC = () => {
   const dispatch = useAppDispatch();
-  const books = useAppSelector(selectAllBooks);
-  const loading = useAppSelector(selectBooksLoading);
-  const error = useAppSelector(selectBooksError);
+  const books = useAppSelector(selectBooksByIdCategorie);
+  const loadingCategorieBooksByIdCategorie = useAppSelector(
+    selectloadingBooksByIdCategorie,
+  );
+  const error = useAppSelector(selectErrorBooksByIdCategorie);
   const selectedCategory = useAppSelector(selectSelectedCategory);
   const categoriesSuper = useAppSelector(selectCategoriesSuper);
   const [initialLoading, setInitialLoading] = useState(true);
   const [value, setValue] = useState(0);
-
-  // Charger la première catégorie au montage
-  // useEffect(() => {
-  //   if (!selectedCategory) {
-  //     handleCategoryClick("biography");
-  //   } else {
-  //     setInitialized(true);
-  //   }
-  // }, []);
 
   useEffect(() => {
     const firstCategory = selectedCategory || "biography";
@@ -85,8 +82,6 @@ const CategoriesSection: React.FC = () => {
       >
         Top Categories
       </Typography>
-
-      {/* Boutons des catégories */}
       <Box
         sx={{
           display: "flex",
@@ -109,20 +104,22 @@ const CategoriesSection: React.FC = () => {
                 key={category.id}
                 label={category.name}
                 onClick={() => handleCategoryClick(category.id)}
+                sx={{
+                  fontSize: "1.1rem",
+                }}
               />
             ))}
         </Tabs>
       </Box>
 
-      {/* Affichage des erreurs */}
       {error && (
         <Alert severity="error" sx={{ mb: 4 }}>
           {error}
         </Alert>
       )}
 
-      {initialLoading || loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+      {initialLoading || loadingCategorieBooksByIdCategorie ? (
+        <Box sx={{ display: "flex", justifyContent: "center", pb: 2 }}>
           <CircularProgress
             size={40}
             sx={{
@@ -131,8 +128,7 @@ const CategoriesSection: React.FC = () => {
           />
         </Box>
       ) : books.length === 0 ? (
-        // 🔴 Aucun livre trouvé
-        <Box sx={{ textAlign: "center", py: 8 }}>
+        <Box sx={{ textAlign: "center", pb: 2 }}>
           <Typography
             variant="h6"
             sx={{
@@ -144,8 +140,13 @@ const CategoriesSection: React.FC = () => {
           </Typography>
         </Box>
       ) : (
+        <>
+          <CategoriesSwipper
+            books={books}
+            selectedCategory={selectedCategory}
+          />
+        </>
         // 🟢 Liste des livres
-        <CategoriesSwipper books={books} selectedCategory={selectedCategory} />
       )}
     </PageContainer>
   );

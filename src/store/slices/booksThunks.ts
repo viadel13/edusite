@@ -66,6 +66,7 @@ export const fetchBooksByCategory = createAsyncThunk<
   async (categoryId, { rejectWithValue, getState }) => {
     try {
       const books = await getBooksByCategory(categoryId);
+
       return books;
     } catch (error) {
       return rejectWithValue(
