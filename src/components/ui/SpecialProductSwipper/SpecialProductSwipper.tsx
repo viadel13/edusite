@@ -88,11 +88,11 @@ function SpecialProductSwipper({ allBooks }: SpecialProductSwipper) {
                         textDecoration: priceDiscount ? "line-through" : "none",
                       }}
                     >
-                      ${book.price}
+                      {book.price} FRCFA
                     </Typography>
                     {priceDiscount > 0 && (
                       <Typography variant="body1">
-                        ${finalPrice.toFixed(2)}
+                        {finalPrice.toFixed(2)} FRCFA
                       </Typography>
                     )}
                   </Stack>

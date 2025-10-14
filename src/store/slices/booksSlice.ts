@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/store/store";
-import { Book, Category, BooksFilter } from "@/types/firestore.type";
+import { Book, Category, BooksFilter, Author } from "@/types/firestore.type";
 
 import {
   createBook,
@@ -13,17 +13,15 @@ import {
   searchBooks,
   updateBook,
   deleteBook,
+  fetchAuthorById,
 } from "@/store/slices/booksThunks";
 
 // 1. INTERFACE STATE
-interface CategoryCache {
-  data: Book[];
-  timestamp: number;
-  expiresAt: number;
-}
 
 interface BooksState {
   items: Array<{
+    authors: Author[];
+    authorById: Author[];
     books: Book[];
     booksByIdCategorie: Book[];
     searchBooks: Book[];
@@ -32,17 +30,21 @@ interface BooksState {
     bookById: Book[];
     featuredBooks: Book[];
     loadingBooks: boolean;
+    loadingAuthorById: boolean;
     loadingBooksByIdCategorie: boolean;
+    loadingAuthors: boolean;
     loadingSearchBooks: boolean;
     loadingCategories: boolean;
     loadingSuperCategories: boolean;
     loadingBookById: boolean;
     loadingFeaturedBooks: boolean;
     errorBookById: string | null;
+    errorAuthorById: string | null;
     errorBooks: string | null;
     errorBooksByIdCategorie: string | null;
     errorSearchBooks: string | null;
     errorCategories: string | null;
+    errorAuthors: string | null;
     errorFeaturedBooks: string | null;
     errorSuperCategories: string | null;
   }>;
@@ -66,6 +68,8 @@ interface BooksState {
 const initialState: BooksState = {
   items: [
     {
+      authors: [],
+      authorById: [],
       books: [],
       booksByIdCategorie: [],
       searchBooks: [],
@@ -74,6 +78,8 @@ const initialState: BooksState = {
       bookById: [],
       featuredBooks: [],
       loadingBooksByIdCategorie: false,
+      loadingAuthors: false,
+      loadingAuthorById: false,
       loadingBooks: false,
       loadingSearchBooks: false,
       loadingCategories: false,
@@ -86,6 +92,8 @@ const initialState: BooksState = {
       errorSuperCategories: null,
       errorBookById: null,
       errorFeaturedBooks: null,
+      errorAuthors: null,
+      errorAuthorById: null,
       errorBooksByIdCategorie: null,
     },
   ],
@@ -123,6 +131,13 @@ const booksSlice = createSlice({
         item.errorBooks = null;
       });
     },
+    setAuthorsFromSnapshot: (state, action: PayloadAction<Author[]>) => {
+      state.items.forEach((item) => {
+        item.authors = action.payload;
+        item.loadingAuthors = false;
+        item.errorAuthors = null;
+      });
+    },
     setSelectedCategory: (state, action: PayloadAction<string | null>) => {
       state.selectedCategory = action.payload;
     },
@@ -140,6 +155,26 @@ const booksSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder
+      .addCase(fetchAuthorById.pending, (state) => {
+        state.items.forEach((item) => {
+          item.loadingAuthorById = true;
+          item.errorAuthorById = null;
+        });
+      })
+      .addCase(fetchAuthorById.fulfilled, (state, action) => {
+        state.items.forEach((item) => {
+          item.loadingAuthorById = false;
+          item.authorById = action.payload;
+        });
+      })
+      .addCase(fetchAuthorById.rejected, (state, action) => {
+        state.items.forEach((item) => {
+          item.loadingAuthorById = false;
+          item.errorAuthorById = action.payload || "Erreur inconnue";
+        });
+      });
+
     // fetchCategories
     builder
       .addCase(fetchCategories.pending, (state) => {
@@ -355,6 +390,7 @@ export const {
   setSelectedBook,
   setSelectedCategory,
   setBooksFromSnapshot,
+  setAuthorsFromSnapshot,
   setSearchQuery,
   clearError,
   clearBooks,
@@ -362,6 +398,8 @@ export const {
 
 // 8. SELECTORS
 export const selectAllBooks = (state: RootState) => state.books.items[0].books;
+export const selectAllAuthors = (state: RootState) =>
+  state.books.items[0].authors;
 export const selectBooksByIdCategorie = (state: RootState) =>
   state.books.items[0].booksByIdCategorie;
 export const selectCategoriesSuper = (state: RootState) =>
@@ -369,6 +407,8 @@ export const selectCategoriesSuper = (state: RootState) =>
 
 export const selectBooksLoading = (state: RootState) =>
   state.books.items[0].loadingBooks;
+export const selectAuthorsLoading = (state: RootState) =>
+  state.books.items[0].loadingAuthors;
 export const selectBooksloadingCatetogerie = (state: RootState) =>
   state.books.items[0].loadingCategories;
 export const selectBooksloadingSuperCategories = (state: RootState) =>

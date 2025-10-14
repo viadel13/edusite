@@ -59,15 +59,17 @@ function Navbar() {
 
   return (
     <>
-      <PageContainer>
-        <AppBar
-          position="static"
-          elevation={0}
-          sx={{
-            backgroundColor: "white",
-            paddingY: 2,
-          }}
-        >
+      <AppBar
+        elevation={0}
+        sx={{
+          backgroundColor: "white",
+          paddingY: 2,
+          height: "80px",
+          justifyContent: "center",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+        }}
+      >
+        <PageContainer>
           <Toolbar
             disableGutters
             sx={{
@@ -210,8 +212,9 @@ function Navbar() {
               </Button>
             </Stack>
           </Toolbar>
-        </AppBar>
-      </PageContainer>
+        </PageContainer>
+      </AppBar>
+
       <DrawerList open={open} setOpen={setOpen} />
     </>
   );

@@ -175,10 +175,10 @@ export default function CategoriesSwipper({
                     sx={{
                       color: "#111827",
                       fontWeight: 600,
-                      fontSize: "1.25rem",
+                      fontSize: "1.1rem",
                     }}
                   >
-                    ${book.price}
+                    {book.price} FRCFA
                   </Typography>
                   {/*{index === 2 && (*/}
                   {/*  <Typography*/}

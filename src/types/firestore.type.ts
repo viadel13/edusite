@@ -13,6 +13,16 @@ export interface Category {
   createdAt: Timestamp | Date;
 }
 
+// Type pour l'auteur
+export type Author = {
+  id: string;
+  name: string;
+  profileImage: string;
+  bio: string;
+  categories: string[];
+  createdAt: Timestamp | Date;
+};
+
 // Type pour un livre
 export type Book = {
   id: string;

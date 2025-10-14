@@ -24,7 +24,71 @@ import {
   BooksByCategory,
   BooksFilter,
   PaginationOptions,
+  Author,
 } from "@/types/firestore.type";
+
+// Fonction pour récupérer tous les auteurs
+export function getAllAuthors(
+  callback: (authors: Author[]) => void,
+): () => void {
+  try {
+    const authorsRef = collection(db, "authors");
+
+    const unsubscribe = onSnapshot(
+      authorsRef,
+      (snapshot) => {
+        // Récupérer les auteurs depuis la snapshot
+        const authors: Author[] = snapshot.docs.map(
+          (doc) =>
+            ({
+              id: doc.id,
+              ...doc.data(),
+            }) as Author,
+        );
+
+        // Appeler le callback avec les auteurs récupérés
+        callback(authors);
+      },
+      (error) => {
+        console.error(
+          "❌ Erreur récupération des auteurs en temps réel:",
+          error,
+        );
+      },
+    );
+
+    return unsubscribe; // Retourner la fonction de désabonnement
+  } catch (error) {
+    console.error("❌ Erreur dans la récupération des auteurs:", error);
+    throw error;
+  }
+}
+
+// Fonction pour récupérer un auteur en fonction de son ID
+export async function getAuthorById(authorId: string): Promise<Author | null> {
+  try {
+    const authorsRef = collection(db, "authors");
+
+    const q = query(authorsRef, where("authorId", "==", authorId));
+
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const authorDoc = querySnapshot.docs[0];
+      const authorData = authorDoc.data();
+      return {
+        id: authorDoc.id,
+        ...authorData,
+      } as Author;
+    } else {
+      console.log("❌ L'auteur avec l'ID spécifié n'existe pas.");
+      return null;
+    }
+  } catch (error) {
+    console.error("❌ Erreur lors de la récupération de l'auteur:", error);
+    throw error;
+  }
+}
 
 // ============================================
 // CATEGORIES
@@ -235,25 +299,6 @@ export async function getBooksByCategory(categoryId: string): Promise<Book[]> {
   } catch (error) {
     console.error("Erreur récupération livres par catégorie:", error);
     throw error;
-  }
-}
-
-/**
- * Mettre à jour le cache de catégorie
- */
-async function updateCategoryCache(
-  categoryId: string,
-  books: Book[],
-): Promise<void> {
-  try {
-    const cacheRef = doc(db, "booksByCategory", categoryId);
-    await setDoc(cacheRef, {
-      categoryId,
-      books,
-      lastUpdated: Timestamp.now(),
-    });
-  } catch (error) {
-    console.warn("Erreur mise à jour cache:", error);
   }
 }
 

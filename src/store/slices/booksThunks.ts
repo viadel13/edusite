@@ -1,13 +1,15 @@
 // 5. THUNKS ASYNCHRONES
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { Book, Category } from "@/types/firestore.type";
+import { Author, Book, Category } from "@/types/firestore.type";
 import {
   createBook as createBookFirestore,
   deleteBook as deleteBookFirestore,
+  getAllAuthors,
   getAllBooks,
   getAllCategories,
   getAllCategoriesSuper,
+  getAuthorById,
   getBookById,
   getBooksByCategory,
   getFeaturedBooks as getFeaturedBooksFirestore,
@@ -15,7 +17,55 @@ import {
   updateBook as updateBookFirestore,
 } from "@/lib/firebase/firestore";
 import type { AppDispatch, RootState } from "@/store/store";
-import { setBooksFromSnapshot } from "@/store/slices/booksSlice";
+import {
+  setAuthorsFromSnapshot,
+  setBooksFromSnapshot,
+} from "@/store/slices/booksSlice";
+
+export const fetchAllAuthors = createAsyncThunk<
+  () => void,
+  void,
+  { rejectValue: string }
+>("books/fetchAllAuthors", async (_, { rejectWithValue, dispatch }) => {
+  try {
+    const unsubscribe = getAllAuthors(
+      (authors) => {
+        dispatch(setAuthorsFromSnapshot(authors));
+      },
+      // { limit: 50, sortBy: "createdAt", sortOrder: "desc" },
+    );
+    return unsubscribe;
+  } catch (error) {
+    return rejectWithValue(
+      error instanceof Error ? error.message : "Erreur récupération livres",
+    );
+  }
+});
+
+export const fetchAuthorById = createAsyncThunk<
+  Author[],
+  string,
+  { rejectValue: string; state: RootState }
+>(
+  "books/fetchBooksAuthorsId",
+  async (authorId, { rejectWithValue, getState }) => {
+    try {
+      const author = await getAuthorById(authorId);
+
+      if (author) {
+        return [author];
+      }
+
+      return rejectWithValue("Auteur non trouvé");
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error
+          ? error.message
+          : "Erreur récupération des auteurs",
+      );
+    }
+  },
+);
 
 /**
  * Récupérer toutes les catégories
@@ -55,7 +105,7 @@ export const fetchCategoriesSuper = createAsyncThunk<
 });
 
 /**
- * Récupérer les livres par catégorie (avec cache)
+ * Récupérer les livres par catégorie
  */
 export const fetchBooksByCategory = createAsyncThunk<
   Book[],

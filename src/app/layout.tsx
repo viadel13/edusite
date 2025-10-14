@@ -6,6 +6,7 @@ import { PageLoaderProvider } from "@/contexts/PageLoaderContext";
 import PageLoadEffect from "@/components/common/PageLoadEffect/PageLoadEffect";
 import GlobalLoader from "@/components/layout/GlobalLoader/GlobalLoader";
 import { RootProvider } from "@/providers/RootProvider";
+import Footer from "@/components/layout/Footer/Footer";
 
 export const metadata: Metadata = {
   title: "Edusite",
@@ -26,6 +27,8 @@ export default function RootLayout({
             <GlobalLoader />
             <Navbar />
             {children}
+
+            <Footer />
           </PageLoaderProvider>
         </RootProvider>
       </body>
