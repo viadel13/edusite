@@ -116,7 +116,7 @@ export default function CategoriesSwipper({
                 image={book.coverUrl}
                 alt={book.title}
                 sx={{
-                  height: { xs: 200, sm: 300 },
+                  height: { xs: 200, sm: 250 },
                   objectFit: "cover",
                 }}
               />

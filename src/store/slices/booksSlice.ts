@@ -371,6 +371,8 @@ export const selectBooksLoading = (state: RootState) =>
   state.books.items[0].loadingBooks;
 export const selectBooksloadingCatetogerie = (state: RootState) =>
   state.books.items[0].loadingCategories;
+export const selectBooksloadingSuperCategories = (state: RootState) =>
+  state.books.items[0].loadingSuperCategories;
 export const selectloadingBooksByIdCategorie = (state: RootState) =>
   state.books.items[0].loadingBooksByIdCategorie;
 export const selectSelectedCategory = (state: RootState) =>

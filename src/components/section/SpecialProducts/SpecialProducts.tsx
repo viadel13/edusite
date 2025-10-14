@@ -6,13 +6,15 @@ import {
   FormControl,
   InputLabel,
   NativeSelect,
+  SelectChangeEvent,
   Stack,
   Tabs,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import PageContainer from "@/components/layout/PageContainer/PageContainer";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { fetchAllBooks } from "@/store/slices/booksThunks";
 import {
   selectAllBooks,
@@ -21,6 +23,10 @@ import {
 } from "@/store/slices/booksSlice";
 import SpecialProductSwipper from "@/components/ui/SpecialProductSwipper/SpecialProductSwipper";
 import FilterProductSwipper from "@/components/ui/FilterProductSwipper/FilterProductSwipper";
+import {
+  SkeletonFilterProduct,
+  SkeletonSpecialProduct,
+} from "@/components/ui/SkeletonCard/SkeletonCard";
 
 function SpecialProducts() {
   const dispatch = useAppDispatch(),
@@ -28,14 +34,22 @@ function SpecialProducts() {
     loading = useAppSelector(selectBooksLoading),
     error = useAppSelector(selectBooksError),
     [initialLoading, setInitialLoading] = useState(true),
-    [selectedOption, setSelectedOption] = useState<number>(1);
+    isLargeScreen = useMediaQuery((theme) => theme.breakpoints.up("md")),
+    isMediumScreen = useMediaQuery((theme) => theme.breakpoints.up("sm")),
+    [selectedOption, setSelectedOption] = React.useState<number>(30);
 
   useEffect(() => {
     dispatch(fetchAllBooks()).finally(() => setInitialLoading(false));
   }, [dispatch]);
 
-  const handleSortChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setSelectedOption(event.target.value as number);
+  const handleSortChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedOption(Number(event.target.value)); // Conversion en nombre
+  };
+
+  const getNumItems = () => {
+    if (isLargeScreen) return 4;
+    if (isMediumScreen) return 2;
+    return 2;
   };
 
   return (
@@ -59,37 +73,7 @@ function SpecialProducts() {
           )}
 
           {initialLoading || loading ? (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: { xs: "center", sm: "start", md: "start" },
-                pb: 2,
-              }}
-            >
-              <CircularProgress
-                size={40}
-                sx={{
-                  color: "#D68B19",
-                }}
-              />
-            </Box>
-          ) : allBooks.length === 0 ? (
-            <Box
-              sx={{
-                textAlign: { xs: "center", sm: "start", md: "start" },
-                pb: 2,
-              }}
-            >
-              <Typography
-                variant="h6"
-                sx={{
-                  color: "#D68B19",
-                  fontSize: 17,
-                }}
-              >
-                Aucun livre trouvé
-              </Typography>
-            </Box>
+            <SkeletonSpecialProduct />
           ) : (
             <SpecialProductSwipper allBooks={allBooks} />
             // 🟢 Liste des livres
@@ -110,9 +94,11 @@ function SpecialProducts() {
             >
               Trier
             </Typography>
-            <Box sx={{ minWidth: 120 }}>
+
+            <Box sx={{ maxWidth: 300, margin: "0 auto", padding: 2 }}>
+              {/* NativeSelect dropdown */}
               <NativeSelect
-                defaultValue={30}
+                value={selectedOption}
                 onChange={handleSortChange}
                 inputProps={{
                   name: "trier",
@@ -122,52 +108,27 @@ function SpecialProducts() {
                   fontSize: { xs: "1.2rem", sm: "1.7rem", md: "1.8rem" },
                 }}
               >
-                <option
-                  value={1}
-                  style={{
-                    fontSize: 18,
-                  }}
-                >
+                <option value={30} style={{ fontSize: 18 }}>
                   Meilleures ventes
                 </option>
-                <option
-                  value={2}
-                  style={{
-                    fontSize: 18,
-                  }}
-                >
+                <option value={1} style={{ fontSize: 18 }}>
                   Nouveaux produits
                 </option>
               </NativeSelect>
+
+              {/* Display content based on selection */}
             </Box>
           </Stack>
           {initialLoading || loading ? (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: { xs: "center", sm: "start", md: "start" },
-                pb: 2,
-              }}
-            >
-              <CircularProgress
-                size={40}
-                sx={{
-                  color: "#D68B19",
-                }}
-              />
-            </Box>
-          ) : allBooks.length === 0 ? (
-            <Box sx={{ textAlign: { xs: "center", md: "start" }, pb: 2 }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  color: "#D68B19",
-                  fontSize: 17,
-                }}
-              >
-                Aucun livre trouvé
-              </Typography>
-            </Box>
+            <Grid container spacing={2}>
+              {Array(getNumItems())
+                .fill(undefined)
+                .map((_, index) => (
+                  <Grid size={{ xs: 6, sm: 6, md: 6 }} key={index}>
+                    <SkeletonFilterProduct />
+                  </Grid>
+                ))}
+            </Grid>
           ) : (
             <FilterProductSwipper
               allBooks={allBooks}
