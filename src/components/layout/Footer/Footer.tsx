@@ -86,7 +86,7 @@ function Footer() {
                 <Image
                   alt={"Logow"}
                   src={"/logow.svg"}
-                  width={179}
+                  width={160}
                   height={100}
                   style={{ height: "auto" }}
                   draggable={false}

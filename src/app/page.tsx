@@ -10,7 +10,9 @@ import OurAuthors from "@/components/section/OurAuthors/OurAuthors";
 
 export default function Home() {
   return (
-    <Stack mt={"80px"}>
+    <Stack
+      sx={{ mt: (theme) => `calc(${theme.mixins.toolbar.minHeight}px + 40px)` }}
+    >
       <HeroSection />
       <BenefitsService />
       <CategoriesSection />
