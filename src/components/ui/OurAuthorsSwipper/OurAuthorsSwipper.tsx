@@ -23,7 +23,7 @@ export default function OurAuthorsSwipper({ authors }: OurAuthorSwipperProps) {
           disableOnInteraction: false,
         }}
         slidesPerView={4}
-        // modules={[Autoplay]}
+        modules={[Autoplay]}
         className={styles.wrapperOurAuthors}
         breakpoints={{
           320: {
