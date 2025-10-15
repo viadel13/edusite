@@ -79,8 +79,10 @@ function DrawerList({ open, setOpen }: DrawerListProps) {
                 },
               }}
               onClick={() => {
-                setLoadPage(true);
-                router.push(i.link);
+                if (pathname !== i.link) {
+                  setLoadPage(true);
+                  router.push(i.link);
+                }
               }}
             >
               <ListItemText primary={i.name} />

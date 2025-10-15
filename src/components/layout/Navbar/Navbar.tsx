@@ -94,7 +94,7 @@ function Navbar() {
                     draggable={false}
                   />
                 </Link>
-              </Box>{" "}
+              </Box>
               <Box
                 sx={{
                   display: { xs: "flex", sm: "none" },
@@ -123,7 +123,7 @@ function Navbar() {
                   key={index}
                   sx={{
                     color: pathname === page.link ? "#D68B19" : "black",
-                    fontWeight: 600,
+                    fontWeight: "normal",
                     fontSize: 18,
                     textTransform: "capitalize",
                     position: "relative",
@@ -138,8 +138,10 @@ function Navbar() {
                     },
                   }}
                   onClick={() => {
-                    setLoadPage(true);
-                    router.push(page.link);
+                    if (pathname !== page.link) {
+                      setLoadPage(true);
+                      router.push(page.link);
+                    }
                   }}
                 >
                   {page.name}
