@@ -241,6 +241,7 @@ function DrawerPanier({ open, setOpen }: DrawerListProps) {
             position: "sticky",
             bottom: 0,
             p: 2,
+            mt: 4,
             backgroundColor: "#fff",
             boxShadow: "0 -2px 10px rgba(0,0,0,0.08)",
           }}
@@ -257,6 +258,18 @@ function DrawerPanier({ open, setOpen }: DrawerListProps) {
               {TotalCard.toLocaleString()} FCFA
             </Typography>
           </Stack>
+          <Button
+            variant={"contained"}
+            fullWidth
+            sx={{
+              color: "white",
+              mt: 2,
+              padding: "12px 12px",
+              backgroundColor: "#D68B19",
+            }}
+          >
+            Procéder au paiement
+          </Button>
         </Paper>
       )}
     </Box>
