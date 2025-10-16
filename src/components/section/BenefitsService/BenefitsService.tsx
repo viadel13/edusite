@@ -1,11 +1,12 @@
 import BenefitsServiceSwipper from "@/components/ui/BenefitsServiceSwipper/BenefitsServiceSwipper";
 import PageContainer from "@/components/layout/PageContainer/PageContainer";
+import { Stack } from "@mui/material";
 
 function BenefitsService() {
   return (
-    <PageContainer mt={{ xs: 5, sm: 5, md: 15 }}>
+    <Stack>
       <BenefitsServiceSwipper />
-    </PageContainer>
+    </Stack>
   );
 }
 export default BenefitsService;

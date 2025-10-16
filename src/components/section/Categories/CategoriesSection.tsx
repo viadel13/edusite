@@ -18,7 +18,6 @@ import {
   selectBooksByIdCategorie,
   selectBooksError,
   selectBooksLoading,
-  selectBooksloadingCatetogerie,
   selectBooksloadingSuperCategories,
   selectCategoriesSuper,
   selectErrorBooksByIdCategorie,
@@ -26,7 +25,7 @@ import {
   selectSelectedCategory,
   setSelectedCategory,
 } from "@/store/slices/booksSlice";
-import PageContainer from "@/components/layout/PageContainer/PageContainer";
+
 import CategoriesSwipper from "@/components/ui/CategoriesSwipper/CategoriesSwipper";
 import Tab from "@mui/material/Tab";
 import Grid from "@mui/material/Grid";
@@ -36,6 +35,7 @@ import {
   fetchCategoriesSuper,
 } from "@/store/slices/booksThunks";
 import { SkeletonProductByCategorie } from "@/components/ui/SkeletonCard/SkeletonCard";
+import Categories from "@/components/common/Categories/Categories";
 
 const CategoriesSection: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -82,7 +82,7 @@ const CategoriesSection: React.FC = () => {
   };
 
   return (
-    <PageContainer mt={{ xs: 5, sm: 5, md: 15 }}>
+    <Stack mt={10}>
       {/* En-tête */}
       <Typography
         variant="h3"
@@ -92,7 +92,7 @@ const CategoriesSection: React.FC = () => {
         sx={{
           fontWeight: 300,
           mb: 6,
-          fontSize: { xs: "1.4rem", sm: "1.7rem", md: "2.2rem" },
+          fontSize: { xs: "1.4rem", sm: "1.7rem", md: "2rem" },
           letterSpacing: "0.05em",
         }}
       >
@@ -158,9 +158,8 @@ const CategoriesSection: React.FC = () => {
             selectedCategory={selectedCategory}
           />
         </>
-        // 🟢 Liste des livres
       )}
-    </PageContainer>
+    </Stack>
   );
 };
 

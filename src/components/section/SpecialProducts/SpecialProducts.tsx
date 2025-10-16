@@ -53,13 +53,13 @@ function SpecialProducts() {
   };
 
   return (
-    <PageContainer mt={{ xs: 5, sm: 5, md: 15 }}>
-      <Grid container spacing={5}>
+    <>
+      <Grid container spacing={5} mt={10}>
         <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }}>
           <Typography
             mb={{ xs: 5, sm: 10 }}
             sx={{
-              fontSize: { xs: "1.4rem", sm: "1.7rem", md: "2.2rem" },
+              fontSize: { xs: "1.4rem", sm: "1.7rem", md: "2rem" },
               textAlign: { xs: "center", sm: "start", md: "start" },
             }}
           >
@@ -89,7 +89,7 @@ function SpecialProducts() {
           >
             <Typography
               sx={{
-                fontSize: { xs: "1.4rem", sm: "1.7rem", md: "2.2rem" },
+                fontSize: { xs: "1.4rem", sm: "1.7rem", md: "2rem" },
               }}
             >
               Trier
@@ -105,7 +105,7 @@ function SpecialProducts() {
                   id: "uncontrolled-native",
                 }}
                 sx={{
-                  fontSize: { xs: "1.2rem", sm: "1.7rem", md: "1.8rem" },
+                  fontSize: { xs: "1.2rem", sm: "1.7rem", md: "1.7rem" },
                 }}
               >
                 <option value={30} style={{ fontSize: 18 }}>
@@ -137,7 +137,7 @@ function SpecialProducts() {
           )}
         </Grid>
       </Grid>
-    </PageContainer>
+    </>
   );
 }
 export default SpecialProducts;

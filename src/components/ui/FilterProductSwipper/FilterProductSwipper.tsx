@@ -56,7 +56,7 @@ function FilterProductSwipper({
         disableOnInteraction: false,
       }}
       slidesPerView={1} // Une slide complète à la fois
-      // modules={[Autoplay]}
+      modules={[Autoplay]}
       className={styles.wrapperFilterProductSwipper}
     >
       {slides.map((slidePairs, slideIndex) => (

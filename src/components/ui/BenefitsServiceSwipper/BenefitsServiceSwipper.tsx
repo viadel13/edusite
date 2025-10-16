@@ -47,12 +47,12 @@ export default function BenefitsServiceSwipper() {
             <Icon icon="iconamoon:delivery-free-thin" width="90" height="90" />
             <Stack spacing={0.4}>
               <Typography
-                fontSize={{ xs: 19, sm: 19, md: 22 }}
+                fontSize={{ xs: 19, sm: 19, md: 21 }}
                 color={"#1c1c1c"}
               >
                 Livraison gratuite
               </Typography>
-              <Typography fontSize={{ xs: 14, md: 16 }} color={"#707070"}>
+              <Typography fontSize={{ xs: 14, md: 15 }} color={"#707070"}>
                 Livraison gratuite, rapide et fiable sur plus de commandes
               </Typography>
             </Stack>
@@ -63,12 +63,12 @@ export default function BenefitsServiceSwipper() {
             <Icon icon="material-symbols-light:call" width="90" height="90" />
             <Stack spacing={0.4}>
               <Typography
-                fontSize={{ xs: 19, sm: 19, md: 22 }}
+                fontSize={{ xs: 19, sm: 19, md: 21 }}
                 color={"#1c1c1c"}
               >
                 {`Centre d'aide 24h/24 et 7j/7`}
               </Typography>
-              <Typography fontSize={{ xs: 14, md: 16 }} color={"#707070"}>
+              <Typography fontSize={{ xs: 14, md: 15 }} color={"#707070"}>
                 {`N'hésitez pas à nous appeler et obtenez le meilleur service d'assistance`}
               </Typography>
             </Stack>
@@ -79,12 +79,12 @@ export default function BenefitsServiceSwipper() {
             <Icon icon="iconoir:shopping-bag" width="90" height="90" />
             <Stack spacing={0.4}>
               <Typography
-                fontSize={{ xs: 19, sm: 19, md: 22 }}
+                fontSize={{ xs: 19, sm: 19, md: 21 }}
                 color={"#1c1c1c"}
               >
                 Achetez avec notre application
               </Typography>
-              <Typography fontSize={{ xs: 14, md: 16 }} color={"#707070"}>
+              <Typography fontSize={{ xs: 14, md: 15 }} color={"#707070"}>
                 Un moyen sûr, plus rapide et plus sécurisé de payer en ligne
                 avec nous
               </Typography>
@@ -96,12 +96,12 @@ export default function BenefitsServiceSwipper() {
             <Icon icon="mdi:encryption-secure-outline" width="90" height="90" />
             <Stack spacing={0.4}>
               <Typography
-                fontSize={{ xs: 19, sm: 19, md: 22 }}
+                fontSize={{ xs: 19, sm: 19, md: 21 }}
                 color={"#1c1c1c"}
               >
                 Paiement sécurisé
               </Typography>
-              <Typography fontSize={{ xs: 14, md: 16 }} color={"#707070"}>
+              <Typography fontSize={{ xs: 14, md: 15 }} color={"#707070"}>
                 Parrainez un ami sur votre site Web et recevez un cadeau
                 surprise
               </Typography>

@@ -53,7 +53,7 @@ export default function CategoriesSwipper({
 
           640: {
             slidesPerView: 2,
-            spaceBetween: 20,
+            spaceBetween: 10,
           },
 
           992: {
@@ -63,27 +63,28 @@ export default function CategoriesSwipper({
 
           1024: {
             slidesPerView: 3,
-            spaceBetween: 30,
+            spaceBetween: 12,
           },
 
           1440: {
             slidesPerView: 4,
-            spaceBetween: 40,
+            spaceBetween: 12,
           },
         }}
       >
         {books.slice(0, 10).map((book, index: number) => (
           <SwiperSlide className={styles.slideCategorie} key={book.id}>
             <Card
+              elevation={0}
               sx={{
                 width: "100%",
-
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                 display: "flex",
                 flexDirection: "column",
                 transition: "transform 0.3s, box-shadow 0.3s",
                 "&:hover": {
                   transform: "translateY(-8px)",
-                  boxShadow: 6,
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                 },
                 position: "relative",
               }}

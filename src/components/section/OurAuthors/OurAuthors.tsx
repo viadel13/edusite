@@ -20,7 +20,7 @@ function OurAuthors() {
   }, []);
 
   return (
-    <PageContainer mt={{ xs: 5, sm: 5, md: 15 }}>
+    <Stack mt={10}>
       <Typography
         variant="h3"
         component="h1"
@@ -29,7 +29,7 @@ function OurAuthors() {
         sx={{
           fontWeight: 300,
           mb: 6,
-          fontSize: { xs: "1.4rem", sm: "1.7rem", md: "2.2rem" },
+          fontSize: { xs: "1.4rem", sm: "1.7rem", md: "2rem" },
           letterSpacing: "0.05em",
         }}
       >
@@ -42,7 +42,7 @@ function OurAuthors() {
       ) : (
         <OurAuthorsSwipper authors={authors} />
       )}
-    </PageContainer>
+    </Stack>
   );
 }
 export default OurAuthors;

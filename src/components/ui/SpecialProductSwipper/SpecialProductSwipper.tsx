@@ -37,7 +37,7 @@ function SpecialProductSwipper({ allBooks }: SpecialProductSwipper) {
         return (
           <SwiperSlide className={styles.slideSpecialProduct} key={book.id}>
             <Grid container spacing={4}>
-              <Grid size={{ xs: 12, sm: 6, md: 6 }}>
+              <Grid size={{ xs: 12, sm: 12, md: 12 }}>
                 <Box
                   sx={{
                     position: "absolute",
@@ -72,7 +72,7 @@ function SpecialProductSwipper({ allBooks }: SpecialProductSwipper) {
                   draggable={false}
                 />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 6 }}>
+              <Grid size={{ xs: 12, sm: 12, md: 12 }}>
                 <Stack spacing={4}>
                   <Typography fontSize={{ xs: 25 }}>{book.title}</Typography>
                   <Stack direction={"row"} spacing={1}>
