@@ -1,5 +1,17 @@
 import { Timestamp } from "firebase/firestore";
 
+export interface CartItem {
+  id: string;
+  title: string;
+  price: number;
+  quantity: number;
+  quantityInStock: number;
+  author?: string;
+  coverUrl?: string;
+  description?: string;
+  inStock: boolean;
+}
+
 // Type pour une catégorie
 export interface Category {
   id: string;
@@ -39,6 +51,7 @@ export type Book = {
   pages?: number;
   language: string;
   categoryId: string;
+  quantity: number;
   subjects: string[];
   rating: number;
   reviewCount: number;

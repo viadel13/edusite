@@ -34,6 +34,10 @@ import {
   selectLoadingSearchBooks,
   selectSearchResults,
 } from "@/store/slices/booksSlice";
+import {
+  loadCartFromLocalStorage,
+  selectCartCount,
+} from "@/store/slices/cartSlice";
 
 const StyledBadge = styled(Badge)<BadgeProps>(() => ({
   "& .MuiBadge-badge": {
@@ -76,6 +80,11 @@ function Navbar() {
     dispatch = useAppDispatch(),
     results = useAppSelector(selectSearchResults),
     loadingSearch = useAppSelector(selectLoadingSearchBooks);
+  const cartCount = useAppSelector(selectCartCount);
+
+  useEffect(() => {
+    dispatch(loadCartFromLocalStorage());
+  }, [dispatch]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -397,7 +406,7 @@ function Navbar() {
                 </IconButton>
 
                 <Stack direction={"row"} alignItems={"center"} spacing={1}>
-                  <StyledBadge badgeContent={4} color="secondary">
+                  <StyledBadge badgeContent={cartCount} color="secondary">
                     <IconButton>
                       <ShoppingCartIcon
                         sx={{

@@ -1,3 +1,5 @@
+"use client";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
@@ -19,6 +21,13 @@ import {
 import { Autoplay } from "swiper/modules";
 import { Book } from "@/types/firestore.type";
 import { Icon } from "@iconify/react";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { addToCart, selectCartItems } from "@/store/slices/cartSlice";
+import toast from "react-hot-toast";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import DrawerList from "@/components/ui/DrawerList/DrawerList";
+import DrawerPanier from "@/components/ui/DrawerPanier/DrawerPanier";
 
 interface CategoriesSwipperProps {
   books: Book[];
@@ -29,6 +38,35 @@ export default function CategoriesSwipper({
   books,
   selectedCategory,
 }: CategoriesSwipperProps) {
+  const dispatch = useAppDispatch();
+  const [animateId, setAnimateId] = useState<string | null>(null);
+  const [showPlusId, setShowPlusId] = useState<string | null>(null);
+  const s = useAppSelector(selectCartItems);
+  const [open, setOpen] = useState(false);
+
+  const handleAddToCart = (book: Book) => {
+    toast.success("Ajouté au panier !");
+    setOpen(true);
+    setAnimateId(book.id);
+    setShowPlusId(book.id);
+
+    setTimeout(() => setAnimateId(null), 400);
+    setTimeout(() => setShowPlusId(null), 600);
+    dispatch(
+      addToCart({
+        id: book.id,
+        title: book.title,
+        price: book.price || 0,
+        quantity: 1,
+        quantityInStock: book.quantity,
+        author: book.author?.join(", "),
+        coverUrl: book.coverUrl,
+        description: book.description,
+        inStock: book.inStock,
+      }),
+    );
+  };
+
   return (
     <>
       <Swiper
@@ -231,24 +269,42 @@ export default function CategoriesSwipper({
                     }}
                   />
                 </IconButton>
-                <IconButton
-                  sx={{
-                    width: 35,
-                    height: 35,
-                    borderRadius: 999,
-                    backgroundColor: "#D68B19",
-                    "&:hover": {
-                      backgroundColor: "black",
-                    },
-                  }}
-                >
-                  <Icon
-                    icon="mage:basket"
-                    width="24"
-                    height="24"
-                    style={{ color: "white" }}
-                  />
-                </IconButton>
+                <Box position="relative">
+                  {showPlusId === book.id && (
+                    <span className={`${styles.plusOne} ${styles.active}`}>
+                      +1
+                    </span>
+                  )}
+
+                  <motion.div
+                    animate={
+                      animateId === book.id
+                        ? { rotate: [0, -15, 15, -10, 10, 0] }
+                        : {}
+                    }
+                    transition={{ duration: 0.4 }}
+                  >
+                    <IconButton
+                      onClick={() => {
+                        handleAddToCart(book);
+                      }}
+                      sx={{
+                        width: 35,
+                        height: 35,
+                        borderRadius: 999,
+                        backgroundColor: "#D68B19",
+                        "&:hover": { backgroundColor: "black" },
+                      }}
+                    >
+                      <Icon
+                        icon="mage:basket"
+                        width="24"
+                        height="24"
+                        style={{ color: "white" }}
+                      />
+                    </IconButton>
+                  </motion.div>
+                </Box>
               </CardActions>
 
               {/* Sujets/Tags */}
@@ -274,6 +330,7 @@ export default function CategoriesSwipper({
           </SwiperSlide>
         ))}
       </Swiper>
+      <DrawerPanier open={open} setOpen={setOpen} />
     </>
   );
 }
