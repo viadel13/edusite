@@ -40,8 +40,9 @@ export default function Categories() {
         top: 100,
         zIndex: 10,
         mt: 10,
-        border: "1px solid rgba(108, 117, 125, 0.2)",
-        borderRadius: 1,
+        borderLeft: "1px solid rgba(108, 117, 125, 0.2)",
+        borderRight: "1px solid rgba(108, 117, 125, 0.2)",
+
         // boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
       }}
     >

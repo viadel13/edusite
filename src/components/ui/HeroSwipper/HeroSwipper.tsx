@@ -127,7 +127,7 @@ export default function HeroSwipper() {
         <SwiperSlide className={styles.slideHero}>
           <PageContainer
             sx={{
-              backgroundColor: "#f2ebe1",
+              backgroundColor: "#c8dcdb",
             }}
           >
             <Stack
@@ -195,7 +195,6 @@ export default function HeroSwipper() {
               </Stack>
               <Stack
                 sx={{
-                  width: "100%",
                   display: { xs: "none", sm: "none", md: "flex", lg: "flex" },
                 }}
               >

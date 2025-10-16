@@ -429,10 +429,6 @@ export async function searchBooks(searchQuery: string): Promise<Book[]> {
   try {
     const booksRef = collection(db, "books");
 
-    // Firestore ne supporte pas la recherche full-text nativement
-    // Option 1: Utiliser Algolia ou Meilisearch
-    // Option 2: Récupérer tous les livres et filtrer côté client (si petit dataset)
-
     const snapshot = await getDocs(booksRef);
     const allBooks = snapshot.docs.map(
       (doc) =>

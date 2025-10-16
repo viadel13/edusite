@@ -19,7 +19,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { pages } from "@/constants/links";
 import PageContainer from "@/components/layout/PageContainer/PageContainer";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Fragment, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import DrawerList from "@/components/ui/DrawerList/DrawerList";
 import { usePathname, useRouter } from "next/navigation";
 import { usePageLoader } from "@/contexts/PageLoaderContext";
@@ -27,6 +27,13 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Icon } from "@iconify/react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { searchBooks } from "@/store/slices/booksThunks";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { useEffect } from "react";
+import {
+  selectLoadingSearchBooks,
+  selectSearchResults,
+} from "@/store/slices/booksSlice";
 
 const StyledBadge = styled(Badge)<BadgeProps>(() => ({
   "& .MuiBadge-badge": {
@@ -59,11 +66,49 @@ function Navbar() {
     toggleDrawer = (newOpen: boolean) => () => {
       setOpen(newOpen);
     },
-    router = useRouter(),
-    pathname = usePathname(),
     { setLoadPage } = usePageLoader(),
     [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null),
-    openMenu = Boolean(anchorEl);
+    openMenu = Boolean(anchorEl),
+    [query, setQuery] = useState(""),
+    [showResults, setShowResults] = useState(false),
+    [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null),
+    searchRef = useRef<HTMLDivElement>(null),
+    dispatch = useAppDispatch(),
+    results = useAppSelector(selectSearchResults),
+    loadingSearch = useAppSelector(selectLoadingSearchBooks);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+
+    if (typingTimeout) clearTimeout(typingTimeout);
+
+    const timeout = setTimeout(() => {
+      if (value.trim().length > 0) {
+        dispatch(searchBooks(value));
+        setShowResults(true);
+      } else {
+        setShowResults(false);
+      }
+    }, 300);
+
+    setTypingTimeout(timeout);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setShowResults(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -172,42 +217,86 @@ function Navbar() {
                   display: { xs: "none", sm: "flex" },
                 }}
               >
-                <TextField
+                <Box
+                  ref={searchRef}
                   sx={{
-                    width: "100%",
-
-                    "& .MuiOutlinedInput-root": {
-                      height: "45px",
-                      borderRadius: "5px",
-                      boxShadow: "none",
-                      border: "none",
-                      backgroundColor: "white",
-                      "&:hover": {
-                        border: "1px solid rgba(0,0,0,0.3)",
-                      },
-                      "&.Mui-focused": {
-                        border: "none",
-                        boxShadow: "none",
-                      },
-                    },
-                  }}
-                />
-                <IconButton
-                  sx={{
-                    position: "absolute",
-                    right: 5,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    display: { xs: "flex", sm: "flex", md: "flex", lg: "none" },
+                    flexGrow: 1,
+                    maxWidth: "100%",
+                    position: "relative",
+                    width: { xs: 300, sm: 350, md: 400 },
                   }}
                 >
-                  <Icon
-                    icon="material-symbols-light:search"
-                    width="20"
-                    height="20"
-                    style={{ color: "black" }}
+                  <TextField
+                    placeholder="Rechercher un livre..."
+                    value={query}
+                    onChange={handleSearchChange}
+                    onFocus={() => query && setShowResults(true)}
+                    sx={{
+                      width: "100%",
+                      "& .MuiOutlinedInput-root": {
+                        height: "45px",
+                        borderRadius: "5px",
+                        backgroundColor: "white",
+                      },
+                    }}
                   />
-                </IconButton>
+
+                  {/* Box des résultats */}
+                  {showResults && (
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "48px",
+                        left: 0,
+                        width: "100%",
+                        bgcolor: "white",
+                        border: "1px solid rgba(108,117,125,0.4)",
+                        borderRadius: "5px",
+                        boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+                        zIndex: 1000,
+                        maxHeight: "250px",
+                        overflowY: "auto",
+                      }}
+                    >
+                      {loadingSearch ? (
+                        <Typography
+                          sx={{ p: 2, textAlign: "center", color: "gray" }}
+                        >
+                          Recherche en cours...
+                        </Typography>
+                      ) : results.length > 0 ? (
+                        results.map((book) => (
+                          <Box
+                            key={book.id}
+                            onMouseDown={() => {
+                              // router.push(`/book/${book.id}`);
+                              setShowResults(false);
+                            }}
+                            sx={{
+                              px: 2,
+                              py: 1,
+                              cursor: "pointer",
+                              "&:hover": { backgroundColor: "#f8f9fa" },
+                            }}
+                          >
+                            <Typography variant="body1" fontWeight={500}>
+                              {book.title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {book.author?.join(", ")}
+                            </Typography>
+                          </Box>
+                        ))
+                      ) : (
+                        <Typography
+                          sx={{ p: 2, textAlign: "center", color: "gray" }}
+                        >
+                          Aucun résultat
+                        </Typography>
+                      )}
+                    </Box>
+                  )}
+                </Box>
 
                 <Button
                   variant={"contained"}
@@ -339,42 +428,107 @@ function Navbar() {
                 display: { xs: "flex", sm: "none" },
               }}
             >
-              <TextField
+              <Box
+                ref={searchRef}
                 sx={{
-                  width: "100%",
-
-                  "& .MuiOutlinedInput-root": {
-                    height: "45px",
-                    borderRadius: "5px",
-                    boxShadow: "none",
-                    border: "none",
-                    backgroundColor: "white",
-                    "&:hover": {
-                      border: "1px solid rgba(0,0,0,0.3)",
-                    },
-                    "&.Mui-focused": {
-                      border: "none",
-                      boxShadow: "none",
-                    },
-                  },
-                }}
-              />
-              <IconButton
-                sx={{
-                  position: "absolute",
-                  right: 5,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  display: { xs: "flex", sm: "flex", md: "flex", lg: "none" },
+                  flexGrow: 1,
+                  maxWidth: "100%",
+                  position: "relative",
+                  width: { xs: 300, sm: 350, md: 400 },
                 }}
               >
-                <Icon
-                  icon="material-symbols-light:search"
-                  width="20"
-                  height="20"
-                  style={{ color: "black" }}
+                <TextField
+                  placeholder="Rechercher un livre..."
+                  value={query}
+                  onChange={handleSearchChange}
+                  onFocus={() => query && setShowResults(true)}
+                  sx={{
+                    width: "100%",
+                    "& .MuiOutlinedInput-root": {
+                      height: "45px",
+                      borderRadius: "5px",
+                      backgroundColor: "white",
+                    },
+                  }}
                 />
-              </IconButton>
+                <IconButton
+                  sx={{
+                    position: "absolute",
+                    right: 5,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    display: {
+                      xs: "flex",
+                      sm: "flex",
+                      md: "flex",
+                      lg: "none",
+                    },
+                  }}
+                >
+                  <Icon
+                    icon="material-symbols-light:search"
+                    width="20"
+                    height="20"
+                    style={{ color: "black" }}
+                  />
+                </IconButton>
+
+                {/* Box des résultats */}
+                {showResults && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "48px",
+                      left: 0,
+                      width: "100%",
+                      bgcolor: "white",
+                      border: "1px solid rgba(108,117,125,0.4)",
+                      borderRadius: "5px",
+                      boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+                      zIndex: 1000,
+                      maxHeight: "250px",
+                      overflowY: "auto",
+                    }}
+                  >
+                    {loadingSearch ? (
+                      <Typography
+                        sx={{ p: 2, textAlign: "center", color: "gray" }}
+                      >
+                        Recherche en cours...
+                      </Typography>
+                    ) : results.length > 0 ? (
+                      results.map((book) => (
+                        <Box
+                          key={book.id}
+                          onMouseDown={() => {
+                            // router.push(`/book/${book.id}`);
+                            setShowResults(false);
+                          }}
+                          sx={{
+                            px: 2,
+                            py: 1,
+                            cursor: "pointer",
+                            "&:hover": { backgroundColor: "#f8f9fa" },
+                          }}
+                        >
+                          <Typography variant="body1" fontWeight={500}>
+                            {book.title}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {book.author?.join(", ")}
+                          </Typography>
+                        </Box>
+                      ))
+                    ) : (
+                      <Typography
+                        sx={{ p: 2, textAlign: "center", color: "gray" }}
+                      >
+                        Aucun résultat
+                      </Typography>
+                    )}
+                  </Box>
+                )}
+              </Box>
             </Stack>
 
             {/*<Stack*/}

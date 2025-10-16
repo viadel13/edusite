@@ -406,7 +406,11 @@ export const selectCategories = (state: RootState) =>
   state.books.items[0].categories;
 export const selectCategoriesSuper = (state: RootState) =>
   state.books.items[0].superCategories;
+export const selectSearchResults = (state: RootState) =>
+  state.books.items[0].searchBooks;
 
+export const selectLoadingSearchBooks = (state: RootState) =>
+  state.books.items[0].loadingSearchBooks;
 export const selectBooksLoading = (state: RootState) =>
   state.books.items[0].loadingBooks;
 export const selectAuthorsLoading = (state: RootState) =>
