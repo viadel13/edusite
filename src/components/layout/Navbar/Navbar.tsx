@@ -71,6 +71,7 @@ function Navbar() {
       setOpen(newOpen);
     },
     { setLoadPage } = usePageLoader(),
+    router = useRouter(),
     [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null),
     openMenu = Boolean(anchorEl),
     [query, setQuery] = useState(""),
@@ -407,7 +408,7 @@ function Navbar() {
 
                 <Stack direction={"row"} alignItems={"center"} spacing={1}>
                   <StyledBadge badgeContent={cartCount} color="secondary">
-                    <IconButton>
+                    <IconButton onClick={() => router.push("/panier")}>
                       <ShoppingCartIcon
                         sx={{
                           color: "black",

@@ -268,7 +268,7 @@ function DrawerPanier({ open, setOpen }: DrawerListProps) {
               backgroundColor: "#D68B19",
             }}
           >
-            Procéder au paiement
+            Passer votre commande
           </Button>
         </Paper>
       )}

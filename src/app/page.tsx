@@ -13,9 +13,7 @@ import PageContainer from "@/components/layout/PageContainer/PageContainer";
 
 export default function Home() {
   return (
-    <Stack
-      sx={{ mt: (theme) => `calc(${theme.mixins.toolbar.minHeight}px + 40px)` }}
-    >
+    <>
       <HeroSection />
       <PageContainer>
         <Grid container spacing={2}>
@@ -41,6 +39,6 @@ export default function Home() {
           </Grid>
         </Grid>
       </PageContainer>
-    </Stack>
+    </>
   );
 }
