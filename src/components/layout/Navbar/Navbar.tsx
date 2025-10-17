@@ -71,6 +71,7 @@ function Navbar() {
       setOpen(newOpen);
     },
     { setLoadPage } = usePageLoader(),
+    pathname = usePathname(),
     router = useRouter(),
     [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null),
     openMenu = Boolean(anchorEl),
@@ -80,8 +81,8 @@ function Navbar() {
     searchRef = useRef<HTMLDivElement>(null),
     dispatch = useAppDispatch(),
     results = useAppSelector(selectSearchResults),
-    loadingSearch = useAppSelector(selectLoadingSearchBooks);
-  const cartCount = useAppSelector(selectCartCount);
+    loadingSearch = useAppSelector(selectLoadingSearchBooks),
+    cartCount = useAppSelector(selectCartCount);
 
   useEffect(() => {
     dispatch(loadCartFromLocalStorage());
@@ -408,7 +409,14 @@ function Navbar() {
 
                 <Stack direction={"row"} alignItems={"center"} spacing={1}>
                   <StyledBadge badgeContent={cartCount} color="secondary">
-                    <IconButton onClick={() => router.push("/panier")}>
+                    <IconButton
+                      onClick={() => {
+                        if (pathname !== "/panier") {
+                          router.push("/panier");
+                          setLoadPage(true);
+                        }
+                      }}
+                    >
                       <ShoppingCartIcon
                         sx={{
                           color: "black",

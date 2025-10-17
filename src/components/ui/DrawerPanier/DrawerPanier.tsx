@@ -73,12 +73,14 @@ function DrawerPanier({ open, setOpen }: DrawerListProps) {
 
   const DrawerListPage = (
     <Box
-      sx={{ width: 350 }}
       role="presentation"
       onClick={() => setOpen(false)}
       component="div"
       p={2}
       position={"relative"}
+      sx={{
+        width: { xs: 300, sm: 300, md: 350 },
+      }}
     >
       <Stack
         direction={"row"}
@@ -178,7 +180,7 @@ function DrawerPanier({ open, setOpen }: DrawerListProps) {
                   fontWeight: 500,
                 }}
               >
-                Remove
+                Supprimer
               </Button>
 
               {/* ➕➖ Quantité */}
@@ -195,37 +197,61 @@ function DrawerPanier({ open, setOpen }: DrawerListProps) {
                     onClick={(e) => handleDecrease(item, e)}
                     disabled={item.quantity === 1}
                     sx={{
-                      border: "1px solid rgba(108,117,125,0.4)",
+                      backgroundColor: "#D68B19",
                       width: 32,
                       height: 32,
                       borderRadius: "6px",
-                      opacity: item.quantity === 1 ? 0.4 : 1,
+                      transition:
+                        "opacity 0.2s ease, background-color 0.2s ease",
+                      "&:hover": {
+                        backgroundColor: "#D68B19",
+                        opacity: 0.9,
+                      },
+                      "&.Mui-disabled": {
+                        backgroundColor: "#D68B19",
+                        opacity: 0.4,
+                        color: "white",
+                      },
                     }}
                   >
-                    <RemoveIcon fontSize="small" />
+                    <RemoveIcon
+                      fontSize="small"
+                      sx={{
+                        color: "white",
+                      }}
+                    />
                   </IconButton>
-
-                  <Typography
-                    fontWeight={600}
+                  <Stack
                     sx={{
-                      width: 20,
-                      textAlign: "center",
-                      userSelect: "none",
+                      p: "2px 25px",
+                      border: "1px solid #adb5bd",
                     }}
                   >
-                    {item.quantity}
-                  </Typography>
+                    <Typography
+                      fontWeight={600}
+                      sx={{
+                        width: 20,
+                        textAlign: "center",
+                        userSelect: "none",
+                      }}
+                    >
+                      {item.quantity}
+                    </Typography>
+                  </Stack>
 
                   <IconButton
                     onClick={(e) => handleIncrease(item, e)}
                     sx={{
-                      border: "1px solid rgba(108,117,125,0.4)",
                       width: 32,
                       height: 32,
                       borderRadius: "6px",
+                      backgroundColor: "primary.main",
+                      "&:hover": {
+                        backgroundColor: "#D68B19",
+                      },
                     }}
                   >
-                    <AddIcon fontSize="small" />
+                    <AddIcon fontSize="small" sx={{ color: "white" }} />
                   </IconButton>
                 </Stack>
               </Stack>
@@ -260,6 +286,7 @@ function DrawerPanier({ open, setOpen }: DrawerListProps) {
           </Stack>
           <Button
             variant={"contained"}
+            disableElevation
             fullWidth
             sx={{
               color: "white",
