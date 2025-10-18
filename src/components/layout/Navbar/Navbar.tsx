@@ -41,23 +41,10 @@ import {
 
 const StyledBadge = styled(Badge)<BadgeProps>(() => ({
   "& .MuiBadge-badge": {
-    right: 5,
-    top: 10,
+    right: 2,
+    top: -2,
     width: 22,
     height: 22,
-    borderRadius: "50%",
-    border: `2px solid #D68B19`,
-    padding: "0 4px",
-    backgroundColor: "#D68B19",
-  },
-}));
-
-const StyledBadgeResponsive = styled(Badge)<BadgeProps>(() => ({
-  "& .MuiBadge-badge": {
-    right: 3,
-    top: 13,
-    width: 20,
-    height: 20,
     borderRadius: "50%",
     border: `2px solid #D68B19`,
     padding: "0 4px",
@@ -164,8 +151,29 @@ function Navbar() {
                 sx={{
                   justifyContent: "flex-start",
                   display: { xs: "none", sm: "none", md: "flex" },
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 2,
                 }}
               >
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={toggleDrawer(true)}
+                  sx={{
+                    display: { xs: "flex", md: "flex", lg: "none" },
+                    padding: 0,
+                  }}
+                >
+                  <MenuIcon
+                    fontSize="large"
+                    sx={{
+                      color: "black",
+                    }}
+                  />
+                </IconButton>
                 <Link href={"/"}>
                   <Image
                     alt={"Logo"}
@@ -183,6 +191,7 @@ function Navbar() {
                   justifyContent: "flex-start",
                   display: { xs: "flex", sm: "flex", md: "none" },
                   flexDirection: "row",
+                  alignItems: "center",
                   gap: 2,
                 }}
               >
@@ -193,7 +202,6 @@ function Navbar() {
                   aria-haspopup="true"
                   onClick={toggleDrawer(true)}
                   sx={{
-                    display: { xs: "flex", md: "none" },
                     padding: 0,
                   }}
                 >
@@ -251,6 +259,23 @@ function Navbar() {
                       },
                     }}
                   />
+
+                  <IconButton
+                    sx={{
+                      position: "absolute",
+                      right: 5,
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      display: { md: "flex", lg: "none" },
+                    }}
+                  >
+                    <Icon
+                      icon="material-symbols-light:search"
+                      width="20"
+                      height="20"
+                      style={{ color: "black" }}
+                    />
+                  </IconButton>
 
                   {/* Box des résultats */}
                   {showResults && (
@@ -329,20 +354,19 @@ function Navbar() {
                 sx={{
                   display: "flex",
                   justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <Stack sx={{ display: { xs: "none", sm: "none", md: "flex" } }}>
+                <Stack
+                  sx={{
+                    display: { xs: "none", sm: "none", md: "none", lg: "flex" },
+                  }}
+                >
                   <Button
                     id="basic-button"
                     aria-controls={openMenu ? "basic-menu" : undefined}
                     aria-haspopup="true"
-                    endIcon={
-                      <KeyboardArrowDownIcon
-                        sx={{
-                          display: { xs: "none", sm: "none", md: "flex" },
-                        }}
-                      />
-                    }
+                    endIcon={<KeyboardArrowDownIcon />}
                     startIcon={
                       <Icon
                         icon="solar:user-circle-outline"
@@ -365,14 +389,7 @@ function Navbar() {
                       color: "black",
                     }}
                   >
-                    <Box
-                      component="span"
-                      sx={{
-                        display: { xs: "none", sm: "none", md: "inline" },
-                      }}
-                    >
-                      Mon Compte
-                    </Box>
+                    <Box component="span">Mon Compte</Box>
                   </Button>
                   <Menu
                     elevation={2}
@@ -398,7 +415,9 @@ function Navbar() {
                 </Stack>
 
                 <IconButton
-                  sx={{ display: { xs: "flex", sm: "flex", md: "none" } }}
+                  sx={{
+                    display: { xs: "flex", sm: "flex", md: "flex", lg: "none" },
+                  }}
                 >
                   <Icon
                     icon="solar:user-circle-outline"
@@ -409,30 +428,37 @@ function Navbar() {
                 </IconButton>
 
                 <Stack direction={"row"} alignItems={"center"} spacing={1}>
-                  <StyledBadge badgeContent={cartCount} color="secondary">
-                    <IconButton
-                      onClick={() => {
-                        if (pathname !== "/panier") {
-                          router.push("/panier");
-                          setLoadPage(true);
-                        }
+                  <Button
+                    onClick={() => {
+                      if (pathname !== "/panier") {
+                        router.push("/panier");
+                        setLoadPage(true);
+                      }
+                    }}
+                    startIcon={
+                      <StyledBadge badgeContent={cartCount} color="secondary">
+                        <ShoppingCartIcon
+                          sx={{
+                            color: "black",
+                          }}
+                        />
+                      </StyledBadge>
+                    }
+                  >
+                    <Typography
+                      sx={{
+                        display: {
+                          xs: "none",
+                          sm: "none",
+                          md: "none",
+                          lg: "flex",
+                        },
+                        color: "black",
                       }}
                     >
-                      <ShoppingCartIcon
-                        sx={{
-                          color: "black",
-                        }}
-                      />
-                    </IconButton>
-                  </StyledBadge>
-                  <Typography
-                    sx={{
-                      display: { xs: "none", sm: "none", md: "flex" },
-                      color: "black",
-                    }}
-                  >
-                    Panier
-                  </Typography>
+                      Panier
+                    </Typography>
+                  </Button>
                 </Stack>
               </Box>
             </Box>
@@ -476,12 +502,6 @@ function Navbar() {
                     right: 5,
                     top: "50%",
                     transform: "translateY(-50%)",
-                    display: {
-                      xs: "flex",
-                      sm: "flex",
-                      md: "flex",
-                      lg: "none",
-                    },
                   }}
                 >
                   <Icon
@@ -549,44 +569,6 @@ function Navbar() {
                 )}
               </Box>
             </Stack>
-
-            {/*<Stack*/}
-            {/*  direction={"row"}*/}
-            {/*  alignItems={"center"}*/}
-            {/*  spacing={{ xs: 2, sm: 3 }}*/}
-            {/*>*/}
-            {/*  <Fragment>*/}
-            {/*    <StyledBadgeResponsive*/}
-            {/*      badgeContent={4}*/}
-            {/*      color="secondary"*/}
-            {/*      sx={{ display: { xs: "flex", sm: "none" } }}*/}
-            {/*    >*/}
-            {/*      <IconButton*/}
-            {/*        sx={{*/}
-            {/*          width: 40,*/}
-            {/*          height: 40,*/}
-            {/*          borderRadius: "50%",*/}
-            {/*          border: "1px solid #6c757d",*/}
-            {/*        }}*/}
-            {/*      >*/}
-            {/*        <ShoppingCartIcon fontSize="small" />*/}
-            {/*      </IconButton>*/}
-            {/*    </StyledBadgeResponsive>*/}
-            {/*  </Fragment>*/}
-            {/*  <IconButton*/}
-            {/*    size="large"*/}
-            {/*    aria-label="account of current user"*/}
-            {/*    aria-controls="menu-appbar"*/}
-            {/*    aria-haspopup="true"*/}
-            {/*    onClick={toggleDrawer(true)}*/}
-            {/*    sx={{*/}
-            {/*      display: { xs: "flex", md: "none" },*/}
-            {/*      padding: 0,*/}
-            {/*    }}*/}
-            {/*  >*/}
-            {/*    <MenuIcon fontSize="large" />*/}
-            {/*  </IconButton>*/}
-            {/*</Stack>*/}
           </Toolbar>
         </PageContainer>
       </AppBar>

@@ -55,7 +55,7 @@ function SpecialProducts() {
   return (
     <>
       <Grid container spacing={5} mt={10}>
-        <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }}>
+        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
           <Typography
             mb={{ xs: 5, sm: 10 }}
             sx={{
@@ -79,7 +79,7 @@ function SpecialProducts() {
             // 🟢 Liste des livres
           )}
         </Grid>
-        <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }}>
+        <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
           <Stack
             direction={"row"}
             alignItems={"center"}

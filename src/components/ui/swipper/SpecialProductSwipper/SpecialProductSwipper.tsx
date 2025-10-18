@@ -107,7 +107,7 @@ function SpecialProductSwipper({ allBooks }: SpecialProductSwipper) {
                         textTransform: "uppercase",
                       }}
                     >
-                      AJOUTER AU PANIER
+                      <Typography fontSize={13}>AJOUTER AU PANIER</Typography>
                     </Button>
                     <IconButton
                       size={"small"}

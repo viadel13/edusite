@@ -18,18 +18,19 @@ export default function Home() {
       <PageContainer>
         <Grid container spacing={2}>
           <Grid
-            size={{ xs: 12, md: 2.5 }}
+            size={{ xs: 12, md: 12, lg: 2.5 }}
             sx={{
               display: {
                 xs: "none", // téléphone
                 sm: "none", // tablette
-                md: "block", // à partir du desktop
+                md: "none", // à partir du desktop
+                lg: "block",
               },
             }}
           >
             <Categories />
           </Grid>
-          <Grid size={{ xs: 12, md: 9.5 }}>
+          <Grid size={{ xs: 12, md: 12, lg: 9.5 }}>
             <Stack>
               <BenefitsService />
               <CategoriesSection />
