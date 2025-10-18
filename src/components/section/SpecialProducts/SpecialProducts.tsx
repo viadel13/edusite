@@ -21,8 +21,8 @@ import {
   selectBooksError,
   selectBooksLoading,
 } from "@/store/slices/booksSlice";
-import SpecialProductSwipper from "@/components/ui/SpecialProductSwipper/SpecialProductSwipper";
-import FilterProductSwipper from "@/components/ui/FilterProductSwipper/FilterProductSwipper";
+import SpecialProductSwipper from "@/components/ui/swipper/SpecialProductSwipper/SpecialProductSwipper";
+import FilterProductSwipper from "@/components/ui/swipper/FilterProductSwipper/FilterProductSwipper";
 import {
   SkeletonFilterProduct,
   SkeletonSpecialProduct,

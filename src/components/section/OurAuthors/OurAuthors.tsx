@@ -7,7 +7,7 @@ import {
   selectAllAuthors,
   selectAuthorsLoading,
 } from "@/store/slices/booksSlice";
-import OurAuthorsSwipper from "@/components/ui/OurAuthorsSwipper/OurAuthorsSwipper";
+import OurAuthorsSwipper from "@/components/ui/swipper/OurAuthorsSwipper/OurAuthorsSwipper";
 
 function OurAuthors() {
   const dispatch = useAppDispatch(),

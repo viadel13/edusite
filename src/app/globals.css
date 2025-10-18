@@ -1,0 +1,74 @@
+
+@font-face {
+  font-family: "Lufga";
+  src: url("/fonts/lufga/LufgaRegular.ttf") format("ttf"),
+  url("/fonts/lufga/LufgaRegular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: "Lufga";
+  src: url("/fonts/lufga/LufgaBold.ttf") format("ttf"),
+  url("/fonts/lufga/LufgaBold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: Lufga, sans-serif !important;
+  line-height: inherit;
+
+}
+
+
+html {
+  -webkit-text-size-adjust: 100%;
+  line-height: 1.5;
+  tab-size: 4;
+  scroll-behavior: smooth;
+
+}
+
+img{
+  user-select: none;
+}
+
+
+.iconify{
+  transition: color 0.3s ease !important;
+}
+
+.icon-hover:hover .iconify {
+  color: white !important;
+}
+
+
+h1,
+h2,
+p,
+pre {
+  margin: 0;
+}
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
+}
+h1,
+h2 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+a {
+  color: inherit;
+  text-decoration: inherit;
+}

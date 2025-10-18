@@ -1,5 +1,7 @@
 export const typography = {
-  fontFamily: '"Inter", "Roboto", "Arial", sans-serif',
+  typography: {
+    fontFamily: "Lufga !important",
+  },
   h1: {
     fontSize: "2.5rem",
     fontWeight: 700,

@@ -133,7 +133,7 @@ function Navbar() {
       <AppBar
         elevation={0}
         sx={{
-          backgroundColor: "white",
+          backgroundColor: "rgb(245,249,245)",
           paddingY: 2,
           height: "auto",
           justifyContent: "center",
@@ -311,6 +311,7 @@ function Navbar() {
 
                 <Button
                   variant={"contained"}
+                  disableElevation
                   sx={{
                     height: "45px",
                     textTransform: "capitalize",
@@ -321,7 +322,7 @@ function Navbar() {
                     backgroundColor: "#D68B19",
                   }}
                 >
-                  Rechercher
+                  <Typography fontSize={15}>Rechercher</Typography>
                 </Button>
               </Stack>
               <Box

@@ -8,6 +8,7 @@ export const components = {
       },
     },
   },
+
   MuiCard: {
     styleOverrides: {
       root: {

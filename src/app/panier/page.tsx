@@ -317,7 +317,7 @@ function Page() {
                   backgroundColor: "#D68B19",
                 }}
               >
-                Passer votre commande
+                <Typography fontSize={15}>Passer votre commande</Typography>
               </Button>
             </Paper>
             <Stack
@@ -380,7 +380,7 @@ function Page() {
                   }
                 }}
               >
-                Retour à la page d'accueil
+                <Typography>Retour à la page d'accueil</Typography>
               </Button>
             </Stack>
           </Stack>

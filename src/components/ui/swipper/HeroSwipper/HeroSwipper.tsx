@@ -65,7 +65,6 @@ export default function HeroSwipper() {
                 </Typography>
                 <Typography
                   sx={{
-                    fontWeight: "bold",
                     color: "#111111",
                     fontSize: {
                       xs: "1.5em",
@@ -98,7 +97,7 @@ export default function HeroSwipper() {
                       fontSize: { xs: 12, sm: 15 },
                     }}
                   >
-                    SHOP NOW
+                    <Typography fontSize={14}>SHOP NOW</Typography>
                   </Button>
                 </Stack>
               </Stack>
@@ -156,7 +155,6 @@ export default function HeroSwipper() {
                 </Typography>
                 <Typography
                   sx={{
-                    fontWeight: "bold",
                     color: "#111111",
                     fontSize: {
                       xs: "1.5em",
@@ -189,7 +187,7 @@ export default function HeroSwipper() {
                       fontSize: { xs: 12, sm: 15 },
                     }}
                   >
-                    SHOP NOW
+                    <Typography fontSize={14}>SHOP NOW</Typography>
                   </Button>
                 </Stack>
               </Stack>

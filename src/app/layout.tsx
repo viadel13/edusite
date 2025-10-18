@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-import "../assets/styles/globals.css";
+import "./globals.css";
 import Navbar from "@/components/layout/Navbar/Navbar";
 import { PageLoaderProvider } from "@/contexts/PageLoaderContext";
 import PageLoadEffect from "@/components/common/PageLoadEffect/PageLoadEffect";

@@ -62,6 +62,7 @@ function Footer() {
 
           <Button
             variant={"contained"}
+            disableElevation
             sx={{
               textTransform: "uppercase",
               color: "white",
@@ -74,7 +75,7 @@ function Footer() {
               backgroundColor: "#D68B19",
             }}
           >
-            Souscrire
+            <Typography fontSize={14}>Souscrire</Typography>
           </Button>
         </Box>
       </Stack>
@@ -195,7 +196,7 @@ function Footer() {
                       }
                     }}
                   >
-                    {page.name}
+                    <Typography>{page.name}</Typography>
                   </Button>
                 </Stack>
               ))}

@@ -75,7 +75,7 @@ export default function Categories() {
         ) : (
           <List disablePadding>
             {categories.map((cat) => (
-              <div key={cat.id}>
+              <Stack key={cat.id}>
                 <ListItemButton
                   sx={{
                     py: 1.5,
@@ -93,7 +93,7 @@ export default function Categories() {
                     }
                   />
                 </ListItemButton>
-              </div>
+              </Stack>
             ))}
           </List>
         )}

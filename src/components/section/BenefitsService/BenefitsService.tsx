@@ -1,4 +1,4 @@
-import BenefitsServiceSwipper from "@/components/ui/BenefitsServiceSwipper/BenefitsServiceSwipper";
+import BenefitsServiceSwipper from "@/components/ui/swipper/BenefitsServiceSwipper/BenefitsServiceSwipper";
 import PageContainer from "@/components/layout/PageContainer/PageContainer";
 import { Stack } from "@mui/material";
 

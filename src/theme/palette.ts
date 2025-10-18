@@ -11,7 +11,7 @@ export const palette = {
       dark: "#9a0036",
     },
     background: {
-      default: "#fff",
+      default: "#F5F4F2",
       paper: "#ffffff",
     },
   },

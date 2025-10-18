@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import HeroSwipper from "@/components/ui/HeroSwipper/HeroSwipper";
+import HeroSwipper from "@/components/ui/swipper/HeroSwipper/HeroSwipper";
 
 function HeroSection() {
   return (

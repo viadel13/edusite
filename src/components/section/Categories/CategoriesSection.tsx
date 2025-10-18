@@ -26,7 +26,7 @@ import {
   setSelectedCategory,
 } from "@/store/slices/booksSlice";
 
-import CategoriesSwipper from "@/components/ui/CategoriesSwipper/CategoriesSwipper";
+import CategoriesSwipper from "@/components/ui/swipper/CategoriesSwipper/CategoriesSwipper";
 import Tab from "@mui/material/Tab";
 import Grid from "@mui/material/Grid";
 
