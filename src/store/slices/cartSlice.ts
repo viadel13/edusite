@@ -7,10 +7,12 @@ import type { Book, CartItem } from "@/types/firestore.type"; // adapte selon to
 // 2️⃣ State du slice
 interface CartState {
   items: CartItem[];
+  loadItemsClick: boolean;
 }
 
 const initialState: CartState = {
   items: [],
+  loadItemsClick: false,
 };
 
 // 3️⃣ Fonction utilitaire : sauvegarder dans localStorage
@@ -39,6 +41,9 @@ const cartSlice = createSlice({
   reducers: {
     loadCartFromLocalStorage(state) {
       state.items = loadFromLocalStorage();
+    },
+    setLoadItemsClick(state, action: PayloadAction<boolean>) {
+      state.loadItemsClick = action.payload;
     },
     addToCart(state, action: PayloadAction<CartItem>) {
       const existing = state.items.find(
@@ -74,12 +79,15 @@ export const {
   addToCart,
   removeFromCart,
   clearCart,
+  setLoadItemsClick,
   updateQuantity,
   loadCartFromLocalStorage,
 } = cartSlice.actions;
 
 // 6️⃣ Sélecteurs
 export const selectCartItems = (state: RootState) => state.cart.items;
+export const selectLoadItemsClick = (state: RootState) =>
+  state.cart.loadItemsClick;
 export const selectCartCount = (state: RootState) =>
   state.cart.items.reduce((acc, item) => acc + item.quantity, 0);
 export const selectCartTotal = (state: RootState) =>

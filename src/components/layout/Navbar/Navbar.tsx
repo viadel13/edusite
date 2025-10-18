@@ -174,7 +174,16 @@ function Navbar() {
                     }}
                   />
                 </IconButton>
-                <Link href={"/"}>
+                <Link
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (pathname !== "/") {
+                      setLoadPage(true);
+                      router.push("/");
+                    }
+                  }}
+                >
                   <Image
                     alt={"Logo"}
                     src={"/logo.svg"}
@@ -212,7 +221,16 @@ function Navbar() {
                     }}
                   />
                 </IconButton>
-                <Link href={"/"}>
+                <Link
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (pathname !== "/") {
+                      setLoadPage(true);
+                      router.push("/");
+                    }
+                  }}
+                >
                   <Image
                     alt={"Logo"}
                     src={"/logo.svg"}

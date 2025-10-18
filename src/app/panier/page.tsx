@@ -1,6 +1,13 @@
 "use client";
 
-import { Button, IconButton, Paper, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 import PageContainer from "@/components/layout/PageContainer/PageContainer";
 import Grid from "@mui/material/Grid";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
@@ -10,7 +17,7 @@ import {
   selectCartTotal,
   updateQuantity,
 } from "@/store/slices/cartSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -18,6 +25,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { Icon } from "@iconify/react";
 import { usePageLoader } from "@/contexts/PageLoaderContext";
 import { usePathname, useRouter } from "next/navigation";
+import { BounceLoader } from "react-spinners";
 
 function Page() {
   const Items = useAppSelector(selectCartItems);
@@ -27,34 +35,76 @@ function Page() {
   const { setLoadPage } = usePageLoader();
   const pathname = usePathname();
   const router = useRouter();
+  const [loadingAction, setLoadingAction] = useState<{
+    id: string | null;
+    type: "increase" | "decrease" | "remove" | null;
+  }>({ id: null, type: null });
+  const [infosLoadPage, setInfosLoadPage] = useState<{
+    load: boolean;
+    exist: boolean | null;
+  }>({ load: true, exist: null });
+
+  useEffect(() => {
+    if (Items.length > 0) {
+      setInfosLoadPage((prevState) => ({
+        ...prevState,
+        load: false,
+        exist: true,
+      }));
+    } else {
+      setInfosLoadPage({
+        load: false,
+        exist: false,
+      });
+    }
+  }, [Items]);
 
   const handleIncrease = (item: any, e: React.MouseEvent) => {
     e.stopPropagation();
+    setLoadingAction({ id: item.id, type: "increase" });
     if (item.quantity < item.quantityInStock) {
-      dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }));
-      toast.success("Quantité mise a jour !");
+      setTimeout(() => {
+        setLoadingAction({ id: null, type: null });
+        dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }));
+        toast.success("Quantité mise a jour !");
+      }, 2000);
     } else {
-      toast.error("Quantité maximale atteinte !");
+      setTimeout(() => {
+        setLoadingAction({ id: null, type: null });
+        toast.error("Quantité maximale atteinte !");
+      }, 2000);
     }
   };
 
   const handleDecrease = (item: any, e: React.MouseEvent) => {
     e.stopPropagation();
+    setLoadingAction({ id: item.id, type: "decrease" });
     if (item.quantity > 1) {
-      dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }));
-      toast.success("Quantité mise a jour !");
+      setTimeout(() => {
+        setLoadingAction({ id: null, type: null });
+        dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }));
+        toast.success("Quantité mise a jour !");
+      }, 2000);
     }
   };
 
   const handleRemove = (item: any, e: React.MouseEvent) => {
     e.stopPropagation();
-    dispatch(removeFromCart(item.id));
-    toast.success("Produit supprimé du panier !");
+    setLoadingAction({ id: item.id, type: "remove" });
+    setTimeout(() => {
+      setLoadingAction({ id: null, type: null });
+      dispatch(removeFromCart(item.id));
+      toast.success("Produit supprimé du panier !");
+    }, 2000);
   };
 
   return (
     <PageContainer mt={10}>
-      {Items.length > 0 ? (
+      {infosLoadPage.load && infosLoadPage.exist === null ? (
+        <Stack alignItems={"center"}>
+          <BounceLoader color="#D68B19" loading size={35} />
+        </Stack>
+      ) : !infosLoadPage.load && infosLoadPage.exist ? (
         <Grid container spacing={4}>
           <Grid size={{ xs: 12, sm: 12, md: 8 }}>
             <Typography
@@ -65,209 +115,296 @@ function Page() {
             >
               Détails de votre panier
             </Typography>
-            {Items.map((item: any) => (
-              <Stack spacing={2} mt={2} key={item.id}>
-                <Paper
-                  elevation={0}
-                  key={item.id}
-                  sx={{
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                    p: 4,
-                    display: "flex",
-                    gap: 2,
-                  }}
-                >
-                  <Stack spacing={2}>
-                    <Image
-                      alt="coverBook"
-                      src={item.coverUrl || fallbackImage}
-                      width={5000}
-                      height={5000}
-                      style={{
-                        height: "90px",
-                        width: "90px",
-                        objectFit: "cover",
-                      }}
-                      draggable={false}
-                    />
-
-                    <Button
-                      variant="outlined"
-                      size={"small"}
-                      color="error"
-                      onClick={(e) => handleRemove(item, e)}
-                      sx={{
-                        textTransform: "none",
-                        borderRadius: "8px",
-                        fontSize: "13px",
-                        fontWeight: 500,
-                        display: { xs: "flex", sm: "flex", md: "none" },
-                      }}
-                    >
-                      Supprimer
-                    </Button>
-                  </Stack>
-                  <Stack
-                    spacing={2}
-                    direction={"row"}
-                    justifyContent={"space-between"}
-                    width={"100%"}
+            {Items.map((item: any) => {
+              const isLoadingThisItem = loadingAction.id === item.id;
+              return (
+                <Stack spacing={2} mt={2} key={item.id}>
+                  <Paper
+                    elevation={0}
+                    key={item.id}
+                    sx={{
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                      p: 4,
+                      display: "flex",
+                      gap: 2,
+                    }}
                   >
-                    <Stack width={"100%"} spacing={4}>
-                      <Stack
-                        width={"100%"}
+                    <Stack spacing={2}>
+                      <Image
+                        alt="coverBook"
+                        src={item.coverUrl || fallbackImage}
+                        width={5000}
+                        height={5000}
+                        style={{
+                          height: "90px",
+                          width: "90px",
+                          objectFit: "cover",
+                        }}
+                        draggable={false}
+                      />
+
+                      <Button
+                        variant="outlined"
+                        size={"small"}
+                        color="error"
+                        onClick={(e) => handleRemove(item, e)}
                         sx={{
-                          display: "flex",
-                          flexDirection: {
-                            xs: "column",
-                            sm: "column",
-                            md: "column",
-                            lg: "row",
-                          },
-                          justifyContent: "space-between",
+                          textTransform: "none",
+                          borderRadius: "8px",
+                          fontSize: "13px",
+                          fontWeight: 500,
+                          pointerEvents: isLoadingThisItem ? "none" : "auto",
+                          display: { xs: "flex", sm: "flex", md: "none" },
                         }}
                       >
-                        <Stack spacing={0.5}>
-                          <Typography
-                            variant="body1"
+                        {isLoadingThisItem &&
+                        loadingAction.type === "remove" ? (
+                          <Box
                             sx={{
-                              maxWidth: "250px",
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              width: "100%",
+                              height: "100%",
                             }}
                           >
-                            {item.title}
-                          </Typography>
-
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{
-                              maxWidth: "450px",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              display: "-webkit-box",
-
-                              WebkitBoxOrient: "vertical",
-                            }}
-                          >
-                            {item.description ||
-                              "Aucune description disponible."}
-                          </Typography>
-                          {item.inStock && (
-                            <Typography color={"primary.main"} fontSize={14}>
-                              En Stock !
-                            </Typography>
-                          )}
-                        </Stack>
+                            <BounceLoader color="#D68B19" loading size={24} />
+                          </Box>
+                        ) : (
+                          <Typography fontSize={14}>Supprimer</Typography>
+                        )}
+                      </Button>
+                    </Stack>
+                    <Stack
+                      spacing={2}
+                      direction={"row"}
+                      justifyContent={"space-between"}
+                      width={"100%"}
+                    >
+                      <Stack width={"100%"} spacing={4}>
                         <Stack
-                          alignSelf={{
-                            xs: "end",
-                            sm: "end",
-                            md: "end",
-                            lg: "start",
-                          }}
-                        >
-                          <Typography color={"#9CA3AF"} fontSize={12}>
-                            {item.price} FRCFA
-                          </Typography>
-                          <Typography fontWeight={"bold"} fontSize={16}>
-                            {(item.price * item.quantity).toLocaleString()} FCFA
-                          </Typography>
-                        </Stack>
-                      </Stack>
-
-                      <Stack
-                        width={"100%"}
-                        justifyContent={"space-between"}
-                        direction={"row"}
-                        alignItems={"center"}
-                      >
-                        <Button
-                          variant="outlined"
-                          size={"small"}
-                          color="error"
-                          onClick={(e) => handleRemove(item, e)}
+                          width={"100%"}
                           sx={{
-                            textTransform: "none",
-                            borderRadius: "8px",
-                            fontSize: "13px",
-                            fontWeight: 500,
-                            display: { xs: "none", sm: "none", md: "flex" },
+                            display: "flex",
+                            flexDirection: {
+                              xs: "column",
+                              sm: "column",
+                              md: "column",
+                              lg: "row",
+                            },
+                            justifyContent: "space-between",
                           }}
                         >
-                          Supprimer
-                        </Button>
-                        <Stack />
-                        <Stack direction="row" alignItems="center" spacing={1}>
-                          <IconButton
-                            onClick={(e) => handleDecrease(item, e)}
-                            disabled={item.quantity === 1}
-                            sx={{
-                              backgroundColor: "#D68B19",
-                              width: 32,
-                              height: 32,
-                              borderRadius: "6px",
-                              transition:
-                                "opacity 0.2s ease, background-color 0.2s ease",
-                              "&:hover": {
-                                backgroundColor: "#D68B19",
-                                opacity: 0.9,
-                              },
-                              "&.Mui-disabled": {
-                                backgroundColor: "#D68B19",
-                                opacity: 0.4,
-                                color: "white",
-                              },
-                            }}
-                          >
-                            <RemoveIcon
-                              fontSize="small"
-                              sx={{
-                                color: "white",
-                              }}
-                            />
-                          </IconButton>
-                          <Stack
-                            sx={{
-                              p: "2px 25px",
-                              border: "1px solid #adb5bd",
-                            }}
-                          >
+                          <Stack spacing={0.5}>
                             <Typography
-                              fontWeight={600}
+                              variant="body1"
                               sx={{
-                                width: 20,
-                                textAlign: "center",
-                                userSelect: "none",
+                                maxWidth: "250px",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
                               }}
                             >
-                              {item.quantity}
+                              {item.title}
                             </Typography>
-                          </Stack>
 
-                          <IconButton
-                            onClick={(e) => handleIncrease(item, e)}
-                            sx={{
-                              width: 32,
-                              height: 32,
-                              borderRadius: "6px",
-                              backgroundColor: "primary.main",
-                              "&:hover": {
-                                backgroundColor: "#D68B19",
-                              },
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              sx={{
+                                maxWidth: "450px",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                display: "-webkit-box",
+
+                                WebkitBoxOrient: "vertical",
+                              }}
+                            >
+                              {item.description ||
+                                "Aucune description disponible."}
+                            </Typography>
+                            {item.inStock && (
+                              <Typography color={"primary.main"} fontSize={14}>
+                                En Stock !
+                              </Typography>
+                            )}
+                          </Stack>
+                          <Stack
+                            alignSelf={{
+                              xs: "end",
+                              sm: "end",
+                              md: "end",
+                              lg: "start",
                             }}
                           >
-                            <AddIcon fontSize="small" sx={{ color: "white" }} />
-                          </IconButton>
+                            <Typography color={"#9CA3AF"} fontSize={12}>
+                              {item.price} FRCFA
+                            </Typography>
+                            <Typography fontWeight={"bold"} fontSize={16}>
+                              {(item.price * item.quantity).toLocaleString()}{" "}
+                              FCFA
+                            </Typography>
+                          </Stack>
+                        </Stack>
+
+                        <Stack
+                          width={"100%"}
+                          justifyContent={"space-between"}
+                          direction={"row"}
+                          alignItems={"center"}
+                        >
+                          <Button
+                            variant="outlined"
+                            size={"small"}
+                            color="error"
+                            onClick={(e) => handleRemove(item, e)}
+                            sx={{
+                              textTransform: "none",
+                              pointerEvents: isLoadingThisItem
+                                ? "none"
+                                : "auto",
+                              borderRadius: "8px",
+                              fontSize: "13px",
+                              fontWeight: 500,
+                              display: { xs: "none", sm: "none", md: "flex" },
+                            }}
+                          >
+                            {isLoadingThisItem &&
+                            loadingAction.type === "remove" ? (
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  width: "100%",
+                                  height: "100%",
+                                }}
+                              >
+                                <BounceLoader
+                                  color="#D68B19"
+                                  loading
+                                  size={24}
+                                />
+                              </Box>
+                            ) : (
+                              <Typography fontSize={14}>Supprimer</Typography>
+                            )}
+                          </Button>
+                          <Stack />
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1}
+                          >
+                            <IconButton
+                              onClick={(e) => handleDecrease(item, e)}
+                              disabled={item.quantity === 1}
+                              sx={{
+                                width: 32,
+                                height: 32,
+                                borderRadius: "6px",
+                                transition:
+                                  "opacity 0.2s ease, background-color 0.2s ease",
+                                pointerEvents: isLoadingThisItem
+                                  ? "none"
+                                  : "auto",
+                                backgroundColor:
+                                  loadingAction.id === item.id &&
+                                  loadingAction.type === "decrease"
+                                    ? "transparent"
+                                    : "#D68B19",
+                                "&:hover": {
+                                  backgroundColor:
+                                    loadingAction.id === item.id &&
+                                    loadingAction.type === "decrease"
+                                      ? "transparent"
+                                      : "#D68B19",
+                                  opacity: 0.9,
+                                },
+                                "&.Mui-disabled": {
+                                  backgroundColor: "#D68B19",
+                                  opacity: 0.4,
+                                  color: "white",
+                                },
+                              }}
+                            >
+                              {isLoadingThisItem &&
+                              loadingAction.type === "decrease" ? (
+                                <BounceLoader
+                                  color="#D68B19"
+                                  loading
+                                  size={25}
+                                />
+                              ) : (
+                                <RemoveIcon
+                                  fontSize="small"
+                                  sx={{ color: "white" }}
+                                />
+                              )}
+                            </IconButton>
+                            <Stack
+                              sx={{
+                                p: "2px 25px",
+                                border: "1px solid #adb5bd",
+                              }}
+                            >
+                              <Typography
+                                fontWeight={600}
+                                sx={{
+                                  width: 20,
+                                  textAlign: "center",
+                                  userSelect: "none",
+                                }}
+                              >
+                                {item.quantity}
+                              </Typography>
+                            </Stack>
+
+                            <IconButton
+                              onClick={(e) => handleIncrease(item, e)}
+                              sx={{
+                                width: 32,
+                                height: 32,
+                                borderRadius: "6px",
+                                pointerEvents: isLoadingThisItem
+                                  ? "none"
+                                  : "auto",
+                                backgroundColor:
+                                  loadingAction.id === item.id &&
+                                  loadingAction.type === "increase"
+                                    ? "transparent"
+                                    : "#D68B19",
+                                "&:hover": {
+                                  backgroundColor:
+                                    loadingAction.id === item.id &&
+                                    loadingAction.type === "increase"
+                                      ? "transparent"
+                                      : "#D68B19",
+                                },
+                              }}
+                            >
+                              {isLoadingThisItem &&
+                              loadingAction.type === "increase" ? (
+                                <BounceLoader
+                                  color="#D68B19"
+                                  loading
+                                  size={25}
+                                />
+                              ) : (
+                                <AddIcon
+                                  fontSize="small"
+                                  sx={{ color: "white" }}
+                                />
+                              )}
+                            </IconButton>
+                          </Stack>
                         </Stack>
                       </Stack>
                     </Stack>
-                  </Stack>
-                </Paper>
-              </Stack>
-            ))}
+                  </Paper>
+                </Stack>
+              );
+            })}
           </Grid>
           <Grid size={{ xs: 12, sm: 12, md: 4 }}>
             <Typography

@@ -20,15 +20,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="layout">
         <RootProvider>
           <PageLoaderProvider>
             <PageLoadEffect />
             <GlobalLoader />
-            <Navbar />
-            {children}
-
-            <Footer />
+            <main className="content">
+              <Navbar />
+              {children}
+              <Footer />
+            </main>
           </PageLoaderProvider>
         </RootProvider>
       </body>

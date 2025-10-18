@@ -25,7 +25,8 @@ import Image from "next/image";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import toast from "react-hot-toast";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { BounceLoader } from "react-spinners";
 
 interface DrawerListProps {
   open: boolean;
@@ -37,6 +38,10 @@ function DrawerPanier({ open, setOpen }: DrawerListProps) {
   const TotalCard = useAppSelector(selectCartTotal);
   const fallbackImage = "/images/noPhoto.png";
   const dispatch = useAppDispatch();
+  const [loadingAction, setLoadingAction] = useState<{
+    id: string | null;
+    type: "increase" | "decrease" | "remove" | null;
+  }>({ id: null, type: null });
 
   const stopPropagation = (e: React.MouseEvent) => e.stopPropagation();
 
@@ -49,26 +54,41 @@ function DrawerPanier({ open, setOpen }: DrawerListProps) {
 
   const handleIncrease = (item: any, e: React.MouseEvent) => {
     e.stopPropagation();
+    setLoadingAction({ id: item.id, type: "increase" });
     if (item.quantity < item.quantityInStock) {
-      dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }));
-      toast.success("Quantité mise a jour !");
+      setTimeout(() => {
+        setLoadingAction({ id: null, type: null });
+        dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }));
+        toast.success("Quantité mise a jour !");
+      }, 2000);
     } else {
-      toast.error("Quantité maximale atteinte !");
+      setTimeout(() => {
+        setLoadingAction({ id: null, type: null });
+        toast.error("Quantité maximale atteinte !");
+      }, 2000);
     }
   };
 
   const handleDecrease = (item: any, e: React.MouseEvent) => {
     e.stopPropagation();
+    setLoadingAction({ id: item.id, type: "decrease" });
     if (item.quantity > 1) {
-      dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }));
-      toast.success("Quantité mise a jour !");
+      setTimeout(() => {
+        setLoadingAction({ id: null, type: null });
+        dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }));
+        toast.success("Quantité mise a jour !");
+      }, 2000);
     }
   };
 
   const handleRemove = (item: any, e: React.MouseEvent) => {
     e.stopPropagation();
-    dispatch(removeFromCart(item.id));
-    toast.success("Produit supprimé du panier !");
+    setLoadingAction({ id: item.id, type: "remove" });
+    setTimeout(() => {
+      setLoadingAction({ id: null, type: null });
+      dispatch(removeFromCart(item.id));
+      toast.success("Produit supprimé du panier !");
+    }, 2000);
   };
 
   const DrawerListPage = (
@@ -105,160 +125,206 @@ function DrawerPanier({ open, setOpen }: DrawerListProps) {
         </IconButton>
       </Stack>
       <Stack spacing={3} mt={4}>
-        {Items.map((item, index) => (
-          <Stack key={index}>
-            <Stack direction={"row"} spacing={2}>
-              <Image
-                alt="coverBook"
-                src={item.coverUrl || fallbackImage}
-                width={5000}
-                height={5000}
-                style={{
-                  height: "70px",
-                  width: "70px",
-                  objectFit: "cover",
-                }}
-                draggable={false}
-              />
-              <Stack spacing={0.5}>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    maxWidth: "250px",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+        {Items.map((item, index) => {
+          const isLoadingThisItem = loadingAction.id === item.id;
+          return (
+            <Stack key={index}>
+              <Stack direction={"row"} spacing={2}>
+                <Image
+                  alt="coverBook"
+                  src={item.coverUrl || fallbackImage}
+                  width={5000}
+                  height={5000}
+                  style={{
+                    height: "70px",
+                    width: "70px",
+                    objectFit: "cover",
                   }}
-                >
-                  {item.title}
-                </Typography>
+                  draggable={false}
+                />
+                <Stack spacing={0.5}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      maxWidth: "250px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {item.title}
+                  </Typography>
 
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{
-                    maxWidth: "250px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                  }}
-                >
-                  {item.description || "Aucune description disponible."}
-                </Typography>
-                {item.inStock && (
-                  <Typography color={"primary.main"} fontSize={14}>
-                    En Stock !
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      maxWidth: "250px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                    }}
+                  >
+                    {item.description || "Aucune description disponible."}
                   </Typography>
-                )}
-                <Stack pt={1}>
-                  <Typography color={"#9CA3AF"} fontSize={12}>
-                    {item.price} FRCFA
-                  </Typography>
-                  <Typography fontWeight={"bold"} fontSize={15}>
-                    {(item.price * item.quantity).toLocaleString()} FCFA
-                  </Typography>
+                  {item.inStock && (
+                    <Typography color={"primary.main"} fontSize={14}>
+                      En Stock !
+                    </Typography>
+                  )}
+                  <Stack pt={1}>
+                    <Typography color={"#9CA3AF"} fontSize={12}>
+                      {item.price} FRCFA
+                    </Typography>
+                    <Typography fontWeight={"bold"} fontSize={15}>
+                      {(item.price * item.quantity).toLocaleString()} FCFA
+                    </Typography>
+                  </Stack>
                 </Stack>
               </Stack>
-            </Stack>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-              mt={2}
-              spacing={1}
-            >
-              <Button
-                variant="outlined"
-                color="error"
-                onClick={(e) => handleRemove(item, e)}
-                sx={{
-                  textTransform: "none",
-                  borderRadius: "8px",
-                  fontSize: "13px",
-                  fontWeight: 500,
-                }}
-              >
-                Supprimer
-              </Button>
-
-              {/* ➕➖ Quantité */}
               <Stack
                 direction="row"
                 justifyContent="space-between"
                 alignItems="center"
                 mt={2}
                 spacing={1}
-                onClick={stopPropagation}
               >
-                <Stack direction="row" alignItems="center" spacing={1}>
-                  <IconButton
-                    onClick={(e) => handleDecrease(item, e)}
-                    disabled={item.quantity === 1}
-                    sx={{
-                      backgroundColor: "#D68B19",
-                      width: 32,
-                      height: 32,
-                      borderRadius: "6px",
-                      transition:
-                        "opacity 0.2s ease, background-color 0.2s ease",
-                      "&:hover": {
-                        backgroundColor: "#D68B19",
-                        opacity: 0.9,
-                      },
-                      "&.Mui-disabled": {
-                        backgroundColor: "#D68B19",
-                        opacity: 0.4,
-                        color: "white",
-                      },
-                    }}
-                  >
-                    <RemoveIcon
-                      fontSize="small"
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={(e) => handleRemove(item, e)}
+                  sx={{
+                    textTransform: "none",
+                    borderRadius: "8px",
+                    pointerEvents: isLoadingThisItem ? "none" : "auto",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                  }}
+                >
+                  {isLoadingThisItem && loadingAction.type === "remove" ? (
+                    <Box
                       sx={{
-                        color: "white",
-                      }}
-                    />
-                  </IconButton>
-                  <Stack
-                    sx={{
-                      p: "2px 25px",
-                      border: "1px solid #adb5bd",
-                    }}
-                  >
-                    <Typography
-                      fontWeight={600}
-                      sx={{
-                        width: 20,
-                        textAlign: "center",
-                        userSelect: "none",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "100%",
+                        height: "100%",
                       }}
                     >
-                      {item.quantity}
-                    </Typography>
-                  </Stack>
+                      <BounceLoader color="#D68B19" loading size={24} />
+                    </Box>
+                  ) : (
+                    <Typography fontSize={14}>Supprimer</Typography>
+                  )}
+                </Button>
 
-                  <IconButton
-                    onClick={(e) => handleIncrease(item, e)}
-                    sx={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: "6px",
-                      backgroundColor: "primary.main",
-                      "&:hover": {
-                        backgroundColor: "#D68B19",
-                      },
-                    }}
-                  >
-                    <AddIcon fontSize="small" sx={{ color: "white" }} />
-                  </IconButton>
+                {/* ➕➖ Quantité */}
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mt={2}
+                  spacing={1}
+                  onClick={stopPropagation}
+                >
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    <IconButton
+                      onClick={(e) => handleDecrease(item, e)}
+                      disabled={item.quantity === 1}
+                      sx={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: "6px",
+                        pointerEvents: isLoadingThisItem ? "none" : "auto",
+                        backgroundColor:
+                          loadingAction.id === item.id &&
+                          loadingAction.type === "decrease"
+                            ? "transparent"
+                            : "#D68B19",
+                        transition:
+                          "opacity 0.2s ease, background-color 0.2s ease",
+                        "&:hover": {
+                          backgroundColor:
+                            loadingAction.id === item.id &&
+                            loadingAction.type === "decrease"
+                              ? "transparent"
+                              : "#D68B19",
+                          opacity: 0.9,
+                        },
+                        "&.Mui-disabled": {
+                          backgroundColor: "#D68B19",
+                          opacity: 0.4,
+                          color: "white",
+                        },
+                      }}
+                    >
+                      {isLoadingThisItem &&
+                      loadingAction.type === "decrease" ? (
+                        <BounceLoader color="#D68B19" loading size={25} />
+                      ) : (
+                        <RemoveIcon fontSize="small" sx={{ color: "white" }} />
+                      )}
+                    </IconButton>
+                    <Stack
+                      sx={{
+                        p: "2px 25px",
+                        border: "1px solid #adb5bd",
+                      }}
+                    >
+                      <Typography
+                        fontWeight={600}
+                        sx={{
+                          width: 20,
+                          textAlign: "center",
+                          userSelect: "none",
+                        }}
+                      >
+                        {item.quantity}
+                      </Typography>
+                    </Stack>
+
+                    <IconButton
+                      onClick={(e) => handleIncrease(item, e)}
+                      sx={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: "6px",
+                        pointerEvents: isLoadingThisItem ? "none" : "auto",
+                        backgroundColor:
+                          loadingAction.id === item.id &&
+                          loadingAction.type === "increase"
+                            ? "transparent"
+                            : "#D68B19",
+                        "&:hover": {
+                          backgroundColor:
+                            loadingAction.id === item.id &&
+                            loadingAction.type === "increase"
+                              ? "transparent"
+                              : "#D68B19",
+                        },
+                        "&.Mui-disabled": {
+                          backgroundColor: "#D68B19",
+                          opacity: 0.4,
+                          color: "white",
+                        },
+                      }}
+                    >
+                      {isLoadingThisItem &&
+                      loadingAction.type === "increase" ? (
+                        <BounceLoader color="#D68B19" loading size={25} />
+                      ) : (
+                        <AddIcon fontSize="small" sx={{ color: "white" }} />
+                      )}
+                    </IconButton>
+                  </Stack>
                 </Stack>
               </Stack>
+              <Divider sx={{ mt: 1 }} />
             </Stack>
-            <Divider sx={{ mt: 1 }} />
-          </Stack>
-        ))}
+          );
+        })}
       </Stack>
       {TotalCard > 0 && (
         <Paper
