@@ -42,6 +42,7 @@ export type Book = {
   description: string;
   author: string[];
   coverUrl: string;
+  othersImagesUrl?: string[];
   thumbnailUrl?: string;
   price: number;
   originalPrice?: number;

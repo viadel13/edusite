@@ -35,6 +35,8 @@ import DrawerList from "@/components/ui/DrawerList/DrawerList";
 import DrawerPanier from "@/components/ui/DrawerPanier/DrawerPanier";
 import { BounceLoader } from "react-spinners";
 import { useAddToCart } from "@/hooks/useAddToCart";
+import { usePageLoader } from "@/contexts/PageLoaderContext";
+import { usePathname, useRouter } from "next/navigation";
 
 interface CategoriesSwipperProps {
   books: Book[];
@@ -49,6 +51,9 @@ export default function CategoriesSwipper({
   const { handleAddToCart, loadingAction, animateId, showPlusId } =
     useAddToCart();
   const loadItemsClick = useAppSelector(selectLoadItemsClick);
+  const { setLoadPage } = usePageLoader();
+  const pathname = usePathname();
+  const router = useRouter();
 
   return (
     <>
@@ -243,9 +248,23 @@ export default function CategoriesSwipper({
                       borderRadius: 999,
                       backgroundColor: "#D68B19",
                       pointerEvents: loadItemsClick ? "none" : "auto",
-                      "&:hover": {
-                        backgroundColor: "black",
+                      "@media (hover: hover) and (pointer: fine)": {
+                        "&:hover": {
+                          backgroundColor: "black",
+                        },
                       },
+                      "@media (hover: none) and (pointer: coarse)": {
+                        "&:hover": {
+                          backgroundColor: "#D68B19",
+                          opacity: 0.8,
+                        },
+                      },
+                    }}
+                    onClick={() => {
+                      if (pathname !== "/livres/") {
+                        setLoadPage(true);
+                        router.push(`/livres/${book.id}`);
+                      }
                     }}
                   >
                     <Icon
@@ -277,7 +296,17 @@ export default function CategoriesSwipper({
                           backgroundColor: isLoading
                             ? "transparent"
                             : "#D68B19",
-                          "&:hover": { backgroundColor: "black" },
+                          "@media (hover: hover) and (pointer: fine)": {
+                            "&:hover": {
+                              backgroundColor: "black",
+                            },
+                          },
+                          "@media (hover: none) and (pointer: coarse)": {
+                            "&:hover": {
+                              backgroundColor: "#D68B19",
+                              opacity: 0.8,
+                            },
+                          },
                           pointerEvents: loadItemsClick ? "none" : "auto",
                           // pointerEvents:
                           //   isLoading || loadingAction.type || loadItemsClick

@@ -398,6 +398,8 @@ export const {
 
 // 8. SELECTORS
 export const selectAllBooks = (state: RootState) => state.books.items[0].books;
+export const selectBookById = (state: RootState) =>
+  state.books.items[0].bookById;
 export const selectAllAuthors = (state: RootState) =>
   state.books.items[0].authors;
 export const selectBooksByIdCategorie = (state: RootState) =>
@@ -411,12 +413,12 @@ export const selectSearchResults = (state: RootState) =>
 
 export const selectLoadingSearchBooks = (state: RootState) =>
   state.books.items[0].loadingSearchBooks;
+export const selectLoadingBookById = (state: RootState) =>
+  state.books.items[0].loadingBookById;
 export const selectBooksLoading = (state: RootState) =>
   state.books.items[0].loadingBooks;
 export const selectAuthorsLoading = (state: RootState) =>
   state.books.items[0].loadingAuthors;
-// export const selectBooksloadingCatetogerie = (state: RootState) =>
-//   state.books.items[0].loadingCategories;
 export const selectLoadingCatetogeries = (state: RootState) =>
   state.books.items[0].loadingCategories;
 export const selectBooksloadingSuperCategories = (state: RootState) =>
@@ -426,6 +428,8 @@ export const selectloadingBooksByIdCategorie = (state: RootState) =>
 export const selectSelectedCategory = (state: RootState) =>
   state.books.selectedCategory;
 
+export const selectBookByIdError = (state: RootState) =>
+  state.books.items[0].errorBookById;
 export const selectBooksError = (state: RootState) =>
   state.books.items[0].errorBooks;
 export const selectAuthorsError = (state: RootState) =>

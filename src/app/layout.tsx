@@ -1,12 +1,8 @@
 import { Metadata } from "next";
 
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar/Navbar";
-import { PageLoaderProvider } from "@/contexts/PageLoaderContext";
-import PageLoadEffect from "@/components/common/PageLoadEffect/PageLoadEffect";
-import GlobalLoader from "@/components/layout/GlobalLoader/GlobalLoader";
+
 import { RootProvider } from "@/providers/RootProvider";
-import Footer from "@/components/layout/Footer/Footer";
 
 export const metadata: Metadata = {
   title: "Edusite",
@@ -21,17 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="layout">
-        <RootProvider>
-          <PageLoaderProvider>
-            <PageLoadEffect />
-            <GlobalLoader />
-            <main className="content">
-              <Navbar />
-              {children}
-              <Footer />
-            </main>
-          </PageLoaderProvider>
-        </RootProvider>
+        <RootProvider>{children}</RootProvider>
       </body>
     </html>
   );

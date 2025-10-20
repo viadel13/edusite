@@ -346,9 +346,6 @@ export async function createBook(
 
     await setDoc(newDocRef, bookData);
 
-    // Invalider le cache de la catégorie
-    await invalidateCategoryCache(book.categoryId);
-
     return newDocRef.id;
   } catch (error) {
     console.error("Erreur création livre:", error);
@@ -373,16 +370,9 @@ export async function updateBook(
 
     // Si la catégorie a changé, invalider les deux caches
     if (updates.categoryId) {
-      const oldBook = await getBookById(bookId);
-      if (oldBook && oldBook.categoryId !== updates.categoryId) {
-        await invalidateCategoryCache(oldBook.categoryId);
-        await invalidateCategoryCache(updates.categoryId);
-      }
+      await getBookById(bookId);
     } else {
-      const book = await getBookById(bookId);
-      if (book) {
-        await invalidateCategoryCache(book.categoryId);
-      }
+      await getBookById(bookId);
     }
   } catch (error) {
     console.error("Erreur mise à jour livre:", error);
@@ -395,30 +385,13 @@ export async function updateBook(
  */
 export async function deleteBook(bookId: string): Promise<void> {
   try {
-    const book = await getBookById(bookId);
+    await getBookById(bookId);
     const docRef = doc(db, "books", bookId);
 
     await deleteDoc(docRef);
-
-    // Invalider le cache de la catégorie
-    if (book) {
-      await invalidateCategoryCache(book.categoryId);
-    }
   } catch (error) {
     console.error("Erreur suppression livre:", error);
     throw error;
-  }
-}
-
-/**
- * Invalider le cache d'une catégorie
- */
-async function invalidateCategoryCache(categoryId: string): Promise<void> {
-  try {
-    const cacheRef = doc(db, "booksByCategory", categoryId);
-    await deleteDoc(cacheRef);
-  } catch (error) {
-    console.warn("Erreur invalidation cache:", error);
   }
 }
 

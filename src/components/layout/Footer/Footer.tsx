@@ -17,14 +17,14 @@ function Footer() {
   return (
     <Box
       mt={{ xs: 16 }}
-      sx={{
-        height: "100vh",
-        position: "relative",
-      }}
+      // sx={{
+      //   height: "100vh",
+      //   position: "relative",
+      // }}
     >
       <Box
         sx={{
-          position: "absolute",
+          position: "relative",
           bottom: 0,
           left: 0,
           right: 0,
