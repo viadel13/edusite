@@ -16,20 +16,15 @@ function Footer() {
 
   return (
     <Box
-      mt={{ xs: 16 }}
-      // sx={{
-      //   height: "100vh",
-      //   position: "relative",
-      // }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        mt: 10,
+        justifyContent: "flex-end",
+      }}
     >
-      <Box
-        sx={{
-          position: "relative",
-          bottom: 0,
-          left: 0,
-          right: 0,
-        }}
-      >
+      <>
         <Box
           width="100%"
           height={"auto"}
@@ -238,11 +233,11 @@ function Footer() {
             }}
           >
             <Typography textAlign={"center"}>
-              Propulsé par DevPro Book Store © 2025
+              Propulsé par DevPro Edusite Store © 2025
             </Typography>
           </Box>
         </Box>
-      </Box>
+      </>
     </Box>
   );
 }

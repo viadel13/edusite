@@ -8,6 +8,7 @@ import {
   Paper,
   Box,
   Button,
+  CircularProgress,
 } from "@mui/material";
 import React, { Suspense, useEffect, useState } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
@@ -127,13 +128,23 @@ function SuspendedBookDetails() {
         </Breadcrumbs>
 
         <Stack sx={{ mt: "15px" }}>
-          {loading && <Typography>Chargement du livre...</Typography>}
+          {loading && (
+            <Stack
+              alignItems={"center"}
+              justifyContent={"center"}
+              sx={{
+                p: 4,
+              }}
+            >
+              <CircularProgress size={35} />
+            </Stack>
+          )}
 
-          {/*{!loading && !currentBook && (*/}
-          {/*  <Typography style={{ color: "red" }}>*/}
-          {/*    ❌ Le livre que vous recherchez n’existe pas ou a été supprimé.*/}
-          {/*  </Typography>*/}
-          {/*)}*/}
+          {!loading && !currentBook && (
+            <Typography style={{ color: "red" }}>
+              ❌ Le livre que vous recherchez n’existe pas ou a été supprimé.
+            </Typography>
+          )}
 
           {!loading && currentBook && (
             <Grid container spacing={2}>

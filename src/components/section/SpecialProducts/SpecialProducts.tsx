@@ -37,10 +37,29 @@ function SpecialProducts() {
     isLargeScreen = useMediaQuery((theme) => theme.breakpoints.up("md")),
     isMediumScreen = useMediaQuery((theme) => theme.breakpoints.up("sm")),
     [selectedOption, setSelectedOption] = React.useState<number>(30);
+  const [infosLoadPage, setInfosLoadPage] = useState<{
+    load: boolean;
+    exist: boolean | null;
+  }>({ load: true, exist: null });
 
   useEffect(() => {
     dispatch(fetchAllBooks()).finally(() => setInitialLoading(false));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (allBooks.length > 0) {
+      setInfosLoadPage((prevState) => ({
+        ...prevState,
+        load: false,
+        exist: true,
+      }));
+    } else {
+      setInfosLoadPage({
+        load: false,
+        exist: false,
+      });
+    }
+  }, [allBooks]);
 
   const handleSortChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(Number(event.target.value)); // Conversion en nombre
@@ -71,13 +90,20 @@ function SpecialProducts() {
               {error}
             </Alert>
           )}
-
-          {initialLoading || loading ? (
+          {infosLoadPage.load && infosLoadPage.exist === null ? (
             <SkeletonSpecialProduct />
-          ) : (
+          ) : !infosLoadPage.load && infosLoadPage.exist ? (
             <SpecialProductSwipper allBooks={allBooks} />
-            // 🟢 Liste des livres
+          ) : (
+            <Typography fontSize={18}>Aucun produit disponible!</Typography>
           )}
+
+          {/*{initialLoading || loading ? (*/}
+          {/*  <SkeletonSpecialProduct />*/}
+          {/*) : (*/}
+          {/*  <SpecialProductSwipper allBooks={allBooks} />*/}
+          {/*  // 🟢 Liste des livres*/}
+          {/*)}*/}
         </Grid>
         <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
           <Stack
@@ -119,7 +145,7 @@ function SpecialProducts() {
               {/* Display content based on selection */}
             </Box>
           </Stack>
-          {initialLoading || loading ? (
+          {infosLoadPage.load && infosLoadPage.exist === null ? (
             <Grid container spacing={2}>
               {Array(getNumItems())
                 .fill(undefined)
@@ -129,12 +155,30 @@ function SpecialProducts() {
                   </Grid>
                 ))}
             </Grid>
-          ) : (
+          ) : !infosLoadPage.load && infosLoadPage.exist ? (
             <FilterProductSwipper
               allBooks={allBooks}
               selectedOption={selectedOption}
             />
+          ) : (
+            <Typography fontSize={18}>Aucun produit disponible!</Typography>
           )}
+          {/*{initialLoading || loading ? (*/}
+          {/*  <Grid container spacing={2}>*/}
+          {/*    {Array(getNumItems())*/}
+          {/*      .fill(undefined)*/}
+          {/*      .map((_, index) => (*/}
+          {/*        <Grid size={{ xs: 6, sm: 6, md: 6 }} key={index}>*/}
+          {/*          <SkeletonFilterProduct />*/}
+          {/*        </Grid>*/}
+          {/*      ))}*/}
+          {/*  </Grid>*/}
+          {/*) : (*/}
+          {/*  <FilterProductSwipper*/}
+          {/*    allBooks={allBooks}*/}
+          {/*    selectedOption={selectedOption}*/}
+          {/*  />*/}
+          {/*)}*/}
         </Grid>
       </Grid>
     </>
