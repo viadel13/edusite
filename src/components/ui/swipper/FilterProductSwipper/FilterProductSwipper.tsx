@@ -1,3 +1,5 @@
+"use client";
+
 import styles from "./styles.module.css";
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -16,6 +18,8 @@ import { useState } from "react";
 import DrawerPanier from "@/components/ui/DrawerPanier/DrawerPanier";
 import { useAppSelector } from "@/hooks/redux";
 import { selectLoadItemsClick } from "@/store/slices/cartSlice";
+import { usePageLoader } from "@/contexts/PageLoaderContext";
+import { usePathname, useRouter } from "next/navigation";
 
 interface SpecialProductSwipper {
   allBooks: Book[];
@@ -30,6 +34,9 @@ function FilterProductSwipper({
   const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // xs et sm
   const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
   const loadItemsClick = useAppSelector(selectLoadItemsClick);
+  const { setLoadPage } = usePageLoader();
+  const pathname = usePathname();
+  const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const { handleAddToCart, loadingAction, animateId, showPlusId } =
@@ -99,6 +106,13 @@ function FilterProductSwipper({
                         >
                           <Stack>
                             <Image
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (pathname !== "/livres/") {
+                                  setLoadPage(true);
+                                  router.push(`/livres/${book.id}`);
+                                }
+                              }}
                               alt="coverBook"
                               src={book.coverUrl}
                               width={5000}
@@ -107,6 +121,7 @@ function FilterProductSwipper({
                                 height: "90px",
                                 width: "90px",
                                 objectFit: "cover",
+                                cursor: "pointer",
                               }}
                               draggable={false}
                             />
@@ -125,7 +140,20 @@ function FilterProductSwipper({
                             <Typography color={"#6c757d"}>
                               {book.author}
                             </Typography>
-                            <Typography>{book.title}</Typography>
+                            <Typography
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (pathname !== "/livres/") {
+                                  setLoadPage(true);
+                                  router.push(`/livres/${book.id}`);
+                                }
+                              }}
+                              sx={{
+                                cursor: "pointer",
+                              }}
+                            >
+                              {book.title}
+                            </Typography>
                             <Typography color={"#6c757d"}>
                               {book.price} FRCFA
                             </Typography>
@@ -143,9 +171,10 @@ function FilterProductSwipper({
                                 pointerEvents: loadItemsClick ? "none" : "auto",
                               }}
                               variant={"text"}
-                              onClick={() =>
-                                handleAddToCart(book, () => setOpen(true))
-                              }
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddToCart(book, () => setOpen(true));
+                              }}
                             >
                               <Typography
                                 sx={{

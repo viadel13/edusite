@@ -106,8 +106,15 @@ export default function CategoriesSwipper({
             <SwiperSlide className={styles.slideCategorie} key={book.id}>
               <Card
                 elevation={0}
+                onClick={() => {
+                  if (pathname !== "/livres/") {
+                    setLoadPage(true);
+                    router.push(`/livres/${book.id}`);
+                  }
+                }}
                 sx={{
                   width: "100%",
+                  cursor: "pointer",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                   display: "flex",
                   flexDirection: "column",
@@ -119,28 +126,6 @@ export default function CategoriesSwipper({
                   position: "relative",
                 }}
               >
-                {/* Badge promo pour certains livres */}
-                {/*{index === 2 && (*/}
-                {/*  <Box*/}
-                {/*    sx={{*/}
-                {/*      position: "absolute",*/}
-                {/*      top: 0,*/}
-                {/*      left: 0,*/}
-                {/*      backgroundColor: "#DC2626",*/}
-                {/*      color: "white",*/}
-                {/*      px: 2,*/}
-                {/*      py: 1,*/}
-                {/*      fontSize: "0.75rem",*/}
-                {/*      fontWeight: 700,*/}
-                {/*      zIndex: 1,*/}
-                {/*      clipPath: "polygon(0 0, 100% 0, 85% 100%, 0% 100%)",*/}
-                {/*      width: "120px",*/}
-                {/*    }}*/}
-                {/*  >*/}
-                {/*    -33% OFF*/}
-                {/*  </Box>*/}
-                {/*)}*/}
-
                 {/* Image de couverture */}
                 <CardMedia
                   component="img"
@@ -211,17 +196,6 @@ export default function CategoriesSwipper({
                     >
                       {book.price} FRCFA
                     </Typography>
-                    {/*{index === 2 && (*/}
-                    {/*  <Typography*/}
-                    {/*    variant="body2"*/}
-                    {/*    sx={{*/}
-                    {/*      color: "#9CA3AF",*/}
-                    {/*      textDecoration: "line-through",*/}
-                    {/*    }}*/}
-                    {/*  >*/}
-                    {/*    ${(parseFloat(getRandomPrice()) * 1.5).toFixed(2)}*/}
-                    {/*  </Typography>*/}
-                    {/*)}*/}
                   </Box>
 
                   {/* Auteur */}
@@ -260,7 +234,8 @@ export default function CategoriesSwipper({
                         },
                       },
                     }}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       if (pathname !== "/livres/") {
                         setLoadPage(true);
                         router.push(`/livres/${book.id}`);
@@ -286,9 +261,10 @@ export default function CategoriesSwipper({
                       transition={{ duration: 0.4 }}
                     >
                       <IconButton
-                        onClick={() =>
-                          handleAddToCart(book, () => setOpen(true))
-                        }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAddToCart(book, () => setOpen(true));
+                        }}
                         sx={{
                           width: 35,
                           height: 35,

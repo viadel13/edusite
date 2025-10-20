@@ -1,6 +1,13 @@
 "use client";
 
-import { Box, CircularProgress, Paper, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Image from "next/image";
 import PageContainer from "@/components/layout/PageContainer/PageContainer";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
@@ -12,11 +19,16 @@ import React, { useEffect } from "react";
 import { fetchCategories } from "@/store/slices/booksThunks";
 import { Icon } from "@iconify/react";
 import Grid from "@mui/material/Grid";
+import { usePageLoader } from "@/contexts/PageLoaderContext";
+import { usePathname, useRouter } from "next/navigation";
 
 function pageLivres() {
   const dispatch = useAppDispatch();
   const categories = useAppSelector(selectCategories);
   const loading = useAppSelector(selectLoadingCatetogeries);
+  const { setLoadPage } = usePageLoader();
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -73,6 +85,19 @@ function pageLivres() {
           >
             Erreur serveur
           </Typography>
+          <Button
+            sx={{
+              fontWeight: "normal",
+            }}
+            onClick={() => {
+              if (pathname !== "/") {
+                router.push("/");
+                setLoadPage(true);
+              }
+            }}
+          >
+            <Typography>Retour à la page d'accueil</Typography>
+          </Button>
         </Paper>
         <Typography
           my={4}

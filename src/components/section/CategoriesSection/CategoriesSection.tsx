@@ -100,7 +100,14 @@ const CategoriesSection: React.FC = () => {
       </Typography>
       {initialLoading || loadingSuperCategories ? (
         <Stack alignItems={"center"} mb={4}>
-          <Skeleton variant="rectangular" width={300} height={20} />
+          <Skeleton
+            variant="rectangular"
+            width={300}
+            height={20}
+            sx={{
+              borderRadius: 5,
+            }}
+          />
         </Stack>
       ) : (
         <Box

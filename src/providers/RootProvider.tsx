@@ -10,11 +10,15 @@ import Footer from "@/components/layout/Footer/Footer";
 import { PageLoaderProvider } from "@/contexts/PageLoaderContext";
 import PageLoadEffect from "@/components/common/PageLoadEffect/PageLoadEffect";
 import GlobalLoader from "@/components/layout/GlobalLoader/GlobalLoader";
+import { useEffect } from "react";
 
 export function RootProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-
   const hideLayout = pathname === "/livres";
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [pathname]);
 
   return (
     <ReduxProvider>

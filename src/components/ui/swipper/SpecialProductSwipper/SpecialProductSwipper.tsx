@@ -14,6 +14,8 @@ import DrawerPanier from "@/components/ui/DrawerPanier/DrawerPanier";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { useAppSelector } from "@/hooks/redux";
 import { selectLoadItemsClick } from "@/store/slices/cartSlice";
+import { usePageLoader } from "@/contexts/PageLoaderContext";
+import { usePathname, useRouter } from "next/navigation";
 
 interface SpecialProductSwipper {
   allBooks: Book[];
@@ -26,6 +28,9 @@ function SpecialProductSwipper({ allBooks }: SpecialProductSwipper) {
   const { handleAddToCart, loadingAction, animateId, showPlusId } =
     useAddToCart();
   const loadItemsClick = useAppSelector(selectLoadItemsClick);
+  const { setLoadPage } = usePageLoader();
+  const pathname = usePathname();
+  const router = useRouter();
 
   return (
     <>
@@ -141,6 +146,12 @@ function SpecialProductSwipper({ allBooks }: SpecialProductSwipper) {
                       </Button>
                       <IconButton
                         size={"small"}
+                        onClick={() => {
+                          if (pathname !== "/livres/") {
+                            setLoadPage(true);
+                            router.push(`/livres/${book.id}`);
+                          }
+                        }}
                         sx={{
                           backgroundColor: "#f5f5f5",
                           "&:hover": {
