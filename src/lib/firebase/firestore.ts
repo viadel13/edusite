@@ -22,7 +22,6 @@ import {
   Book,
   Category,
   BooksByCategory,
-  BooksFilter,
   PaginationOptions,
   Author,
 } from "@/types/firestore.type";

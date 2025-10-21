@@ -13,14 +13,12 @@ import {
   getBookById,
   getBooksByCategory,
   getFeaturedBooks as getFeaturedBooksFirestore,
-  getFilteredBooks,
   searchBooks as searchBooksFirestore,
   updateBook as updateBookFirestore,
 } from "@/lib/firebase/firestore";
 import type { AppDispatch, RootState } from "@/store/store";
 import {
   setAuthorsFromSnapshot,
-  setBooksFilterFromSnapshot,
   setBooksFromSnapshot,
 } from "@/store/slices/booksSlice";
 
