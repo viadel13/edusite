@@ -26,7 +26,7 @@ import FilterProductSwipper from "@/components/ui/swipper/FilterProductSwipper/F
 import {
   SkeletonFilterProduct,
   SkeletonSpecialProduct,
-} from "@/components/ui/SkeletonCard/SkeletonCard";
+} from "@/components/ui/Card/SkeletonCard/SkeletonCard";
 
 function SpecialProducts() {
   const dispatch = useAppDispatch(),

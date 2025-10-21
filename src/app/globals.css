@@ -81,3 +81,14 @@ a {
 }
 
 
+/* Supprimer les flèches dans les inputs de type number */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;  /* Désactive l'apparence des flèches dans WebKit (Chrome, Safari, etc.) */
+  margin: 0; /* Supprime les marges pour éviter l'alignement incorrect */
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Désactive les flèches dans Firefox */
+  appearance: textfield; /* Désactive les flèches dans d'autres navigateurs */
+}

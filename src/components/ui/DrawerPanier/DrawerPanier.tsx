@@ -9,6 +9,7 @@ import {
   Divider,
   Button,
   Paper,
+  TextField,
 } from "@mui/material";
 
 import { usePathname, useRouter } from "next/navigation";
@@ -25,7 +26,7 @@ import Image from "next/image";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import toast from "react-hot-toast";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { BounceLoader } from "react-spinners";
 
 interface DrawerListProps {
@@ -232,7 +233,7 @@ function DrawerPanier({ open, setOpen }: DrawerListProps) {
                   <Stack direction="row" alignItems="center" spacing={1}>
                     <IconButton
                       onClick={(e) => handleDecrease(item, e)}
-                      disabled={item.quantity === 1}
+                      disabled={item.quantity === 1 || item.quantity === 0}
                       sx={{
                         width: 32,
                         height: 32,
@@ -267,23 +268,51 @@ function DrawerPanier({ open, setOpen }: DrawerListProps) {
                         <RemoveIcon fontSize="small" sx={{ color: "white" }} />
                       )}
                     </IconButton>
-                    <Stack
-                      sx={{
-                        p: "2px 25px",
-                        border: "1px solid #adb5bd",
+                    <TextField
+                      type="text"
+                      value={item.quantity}
+                      onChange={(e) => {
+                        const value = e.target.value;
+
+                        if (value === "") {
+                          dispatch(
+                            updateQuantity({
+                              id: item.id,
+                              quantity: 0,
+                            }),
+                          );
+                        } else {
+                          const parsedValue = parseInt(value, 10);
+
+                          if (
+                            parsedValue >= 0 &&
+                            parsedValue <= item.quantityInStock
+                          ) {
+                            dispatch(
+                              updateQuantity({
+                                id: item.id,
+                                quantity: parsedValue,
+                              }),
+                            );
+                          }
+                        }
                       }}
-                    >
-                      <Typography
-                        fontWeight={600}
-                        sx={{
-                          width: 20,
-                          textAlign: "center",
-                          userSelect: "none",
-                        }}
-                      >
-                        {item.quantity}
-                      </Typography>
-                    </Stack>
+                      variant="outlined"
+                      size="small"
+                      slotProps={{
+                        input: {
+                          style: {
+                            textAlign: "center",
+                            fontWeight: 600,
+                            padding: "0 8px",
+                            height: "35px",
+                          },
+                        },
+                      }}
+                      sx={{
+                        width: "70px",
+                      }}
+                    />
 
                     <IconButton
                       onClick={(e) => handleIncrease(item, e)}

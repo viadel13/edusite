@@ -34,7 +34,7 @@ import {
   fetchBooksByCategory,
   fetchCategoriesSuper,
 } from "@/store/slices/booksThunks";
-import { SkeletonProductByCategorie } from "@/components/ui/SkeletonCard/SkeletonCard";
+import { SkeletonProductByCategorie } from "@/components/ui/Card/SkeletonCard/SkeletonCard";
 import Categories from "@/components/common/Categories/Categories";
 
 const CategoriesSection: React.FC = () => {

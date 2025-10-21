@@ -8,6 +8,7 @@ import {
   Link as MUILink,
   Paper,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import PageContainer from "@/components/layout/PageContainer/PageContainer";
@@ -365,7 +366,9 @@ function Page() {
                             >
                               <IconButton
                                 onClick={(e) => handleDecrease(item, e)}
-                                disabled={item.quantity === 1}
+                                disabled={
+                                  item.quantity === 1 || item.quantity === 0
+                                }
                                 sx={{
                                   width: 32,
                                   height: 32,
@@ -409,23 +412,52 @@ function Page() {
                                   />
                                 )}
                               </IconButton>
-                              <Stack
-                                sx={{
-                                  p: "2px 25px",
-                                  border: "1px solid #adb5bd",
+
+                              <TextField
+                                type="text"
+                                value={item.quantity}
+                                onChange={(e) => {
+                                  const value = e.target.value;
+
+                                  if (value === "") {
+                                    dispatch(
+                                      updateQuantity({
+                                        id: item.id,
+                                        quantity: 0,
+                                      }),
+                                    );
+                                  } else {
+                                    const parsedValue = parseInt(value, 10);
+
+                                    if (
+                                      parsedValue >= 0 &&
+                                      parsedValue <= item.quantityInStock
+                                    ) {
+                                      dispatch(
+                                        updateQuantity({
+                                          id: item.id,
+                                          quantity: parsedValue,
+                                        }),
+                                      );
+                                    }
+                                  }
                                 }}
-                              >
-                                <Typography
-                                  fontWeight={600}
-                                  sx={{
-                                    width: 20,
-                                    textAlign: "center",
-                                    userSelect: "none",
-                                  }}
-                                >
-                                  {item.quantity}
-                                </Typography>
-                              </Stack>
+                                variant="outlined"
+                                size="small"
+                                slotProps={{
+                                  input: {
+                                    style: {
+                                      textAlign: "center",
+                                      fontWeight: 600,
+                                      padding: "0 8px",
+                                      height: "35px",
+                                    },
+                                  },
+                                }}
+                                sx={{
+                                  width: "70px",
+                                }}
+                              />
 
                               <IconButton
                                 onClick={(e) => handleIncrease(item, e)}

@@ -131,6 +131,7 @@ const booksSlice = createSlice({
         item.errorBooks = null;
       });
     },
+
     setAuthorsFromSnapshot: (state, action: PayloadAction<Author[]>) => {
       state.items.forEach((item) => {
         item.authors = action.payload;
@@ -391,6 +392,7 @@ export const {
   setSelectedCategory,
   setBooksFromSnapshot,
   setAuthorsFromSnapshot,
+
   setSearchQuery,
   clearError,
   clearBooks,
@@ -398,6 +400,7 @@ export const {
 
 // 8. SELECTORS
 export const selectAllBooks = (state: RootState) => state.books.items[0].books;
+
 export const selectBookById = (state: RootState) =>
   state.books.items[0].bookById;
 export const selectAllAuthors = (state: RootState) =>
@@ -417,6 +420,7 @@ export const selectLoadingBookById = (state: RootState) =>
   state.books.items[0].loadingBookById;
 export const selectBooksLoading = (state: RootState) =>
   state.books.items[0].loadingBooks;
+
 export const selectAuthorsLoading = (state: RootState) =>
   state.books.items[0].loadingAuthors;
 export const selectLoadingCatetogeries = (state: RootState) =>
@@ -432,6 +436,7 @@ export const selectBookByIdError = (state: RootState) =>
   state.books.items[0].errorBookById;
 export const selectBooksError = (state: RootState) =>
   state.books.items[0].errorBooks;
+
 export const selectAuthorsError = (state: RootState) =>
   state.books.items[0].errorAuthors;
 export const selectCategoriesError = (state: RootState) =>

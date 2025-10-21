@@ -28,6 +28,8 @@ import ZoomImage from "@/components/ui/ZoomImage/ZoomImage";
 import { Icon } from "@iconify/react";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import DrawerPanier from "@/components/ui/DrawerPanier/DrawerPanier";
+import toast from "react-hot-toast";
+import { setLoadItemsClick } from "@/store/slices/cartSlice";
 
 function SuspendedBookDetails() {
   const { id } = useParams<{ id: string }>();
@@ -39,6 +41,7 @@ function SuspendedBookDetails() {
   const router = useRouter();
   const [activeImage, setActiveImage] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+  const [loadButtonAdd, setLoadButtonAdd] = useState(false);
   const { handleAddToCart, loadingAction, animateId, showPlusId } =
     useAddToCart();
 
@@ -49,6 +52,14 @@ function SuspendedBookDetails() {
   const handleSelectImage = (url: string) => {
     setActiveImage(url);
   };
+
+  function addCard() {
+    setLoadButtonAdd(true);
+    handleAddToCart(currentBook, () => setOpen(true));
+    setTimeout(() => {
+      setLoadButtonAdd(false);
+    }, 2000);
+  }
 
   const currentBook = Array.isArray(book) ? book[0] : book;
 
@@ -285,18 +296,12 @@ function SuspendedBookDetails() {
                   </Stack>
                   <Button
                     disableElevation
-                    loading={
-                      loadingAction.id === currentBook.id &&
-                      loadingAction.type === "add"
-                    }
-                    onClick={() =>
-                      handleAddToCart(currentBook, () => setOpen(true))
-                    }
+                    loading={loadButtonAdd}
+                    onClick={addCard}
                     size={"small"}
                     variant={"contained"}
                     startIcon={
-                      loadingAction.id === currentBook.id &&
-                      loadingAction.type === "add" ? (
+                      loadButtonAdd ? (
                         <></>
                       ) : (
                         <Icon

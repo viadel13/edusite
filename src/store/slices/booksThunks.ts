@@ -1,7 +1,7 @@
 // 5. THUNKS ASYNCHRONES
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { Author, Book, Category } from "@/types/firestore.type";
+import { Author, Book, BooksFilter, Category } from "@/types/firestore.type";
 import {
   createBook as createBookFirestore,
   deleteBook as deleteBookFirestore,
@@ -13,12 +13,14 @@ import {
   getBookById,
   getBooksByCategory,
   getFeaturedBooks as getFeaturedBooksFirestore,
+  getFilteredBooks,
   searchBooks as searchBooksFirestore,
   updateBook as updateBookFirestore,
 } from "@/lib/firebase/firestore";
 import type { AppDispatch, RootState } from "@/store/store";
 import {
   setAuthorsFromSnapshot,
+  setBooksFilterFromSnapshot,
   setBooksFromSnapshot,
 } from "@/store/slices/booksSlice";
 
@@ -125,24 +127,6 @@ export const fetchBooksByCategory = createAsyncThunk<
     }
   },
 );
-
-/**
- * Récupérer tous les livres
- */
-// export const fetchAllBooks = createAsyncThunk<
-//   void,
-//   void,
-//   { rejectValue: string }
-// >("books/fetchAllBooks", async (_, { rejectWithValue }) => {
-//   try {
-//     const books = await getAllBooks({ limit: 50, page: 1 });
-//     return books;
-//   } catch (error) {
-//     return rejectWithValue(
-//       error instanceof Error ? error.message : "Erreur récupération livres",
-//     );
-//   }
-// });
 
 export const fetchAllBooks = createAsyncThunk<
   () => void,
