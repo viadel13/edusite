@@ -354,7 +354,7 @@ function PageCategories() {
             <Grid container spacing={2}>
               {paginatedBooks.length > 0 ? (
                 paginatedBooks.map((book, index) => (
-                  <Grid key={index} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+                  <Grid key={index} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
                     <CardProduct book={book} />
                   </Grid>
                 ))
