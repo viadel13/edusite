@@ -42,21 +42,20 @@ export function useAddToCart() {
       return;
     }
 
-    dispatch(
-      addToCart({
-        id: book.id,
-        title: book.title,
-        price: book.price || 0,
-        quantity: 1,
-        quantityInStock: book.quantity,
-        author: book.author?.join(", "),
-        coverUrl: book.coverUrl,
-        description: book.description,
-        inStock: book.inStock,
-      }),
-    );
-
     setTimeout(() => {
+      dispatch(
+        addToCart({
+          id: book.id,
+          title: book.title,
+          price: book.price || 0,
+          quantity: 1,
+          quantityInStock: book.quantity,
+          author: book.author?.join(", "),
+          coverUrl: book.coverUrl,
+          description: book.description,
+          inStock: book.inStock,
+        }),
+      );
       setLoadingAction({ id: null, type: null });
       toast.success("Ajouté au panier !");
       dispatch(setLoadItemsClick(false));

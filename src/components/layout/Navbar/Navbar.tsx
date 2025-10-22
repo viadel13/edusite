@@ -12,7 +12,8 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import Link from "next/link";
+import Link from "@mui/material/Link";
+import NextLink from "next/link";
 import Image from "next/image";
 import Badge from "@mui/material/Badge";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCartOutlined";
@@ -69,7 +70,8 @@ function Navbar() {
     dispatch = useAppDispatch(),
     results = useAppSelector(selectSearchResults),
     loadingSearch = useAppSelector(selectLoadingSearchBooks),
-    cartCount = useAppSelector(selectCartCount);
+    cartCount = useAppSelector(selectCartCount),
+    searchButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     dispatch(loadCartFromLocalStorage());
@@ -91,6 +93,25 @@ function Navbar() {
     }, 300);
 
     setTypingTimeout(timeout);
+  };
+
+  const handleSearchClick = () => {
+    if (!query.trim()) return;
+    setLoadPage(true);
+
+    const matchedBook = results.find(
+      (b) => b.title.toLowerCase() === query.trim().toLowerCase(),
+    );
+
+    if (matchedBook) {
+      router.push(`/livres/${matchedBook.id}`);
+      setLoadPage(false);
+    } else {
+      if (pathname !== "/livres/") {
+        router.push(`/livres/${query.replace(/\s+/g, "-").toLowerCase()}`);
+        setLoadPage(false);
+      }
+    }
   };
 
   useEffect(() => {
@@ -176,6 +197,7 @@ function Navbar() {
                 </IconButton>
                 <Link
                   href="/"
+                  component={NextLink}
                   onClick={(e) => {
                     e.preventDefault();
                     if (pathname !== "/") {
@@ -189,7 +211,12 @@ function Navbar() {
                     src={"/logo.svg"}
                     width={160}
                     height={100}
-                    style={{ height: "auto" }}
+                    style={{
+                      height: "auto",
+                      WebkitTapHighlightColor: "transparent",
+                      userSelect: "none",
+                      outline: "none",
+                    }}
                     draggable={false}
                   />
                 </Link>
@@ -223,6 +250,7 @@ function Navbar() {
                 </IconButton>
                 <Link
                   href="/"
+                  component={NextLink}
                   onClick={(e) => {
                     e.preventDefault();
                     if (pathname !== "/") {
@@ -236,7 +264,12 @@ function Navbar() {
                     src={"/logo.svg"}
                     width={130}
                     height={100}
-                    style={{ height: "auto" }}
+                    style={{
+                      height: "auto",
+                      WebkitTapHighlightColor: "transparent",
+                      userSelect: "none",
+                      outline: "none",
+                    }}
                     draggable={false}
                   />
                 </Link>
@@ -267,6 +300,12 @@ function Navbar() {
                     placeholder="Rechercher un livre..."
                     value={query}
                     onChange={handleSearchChange}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault(); // empêche un reload de page
+                        handleSearchClick(); // ✅ lance la recherche
+                      }
+                    }}
                     onFocus={() => query && setShowResults(true)}
                     sx={{
                       width: "100%",
@@ -323,7 +362,11 @@ function Navbar() {
                           <Box
                             key={book.id}
                             onMouseDown={() => {
-                              // router.push(`/book/${book.id}`);
+                              if (pathname !== "/livres/") {
+                                setLoadPage(true);
+                                router.push(`/livres/${book.id}`);
+                              }
+
                               setShowResults(false);
                             }}
                             sx={{
@@ -354,6 +397,7 @@ function Navbar() {
 
                 <Button
                   variant={"contained"}
+                  onClick={handleSearchClick}
                   disableElevation
                   sx={{
                     height: "45px",
@@ -505,6 +549,12 @@ function Navbar() {
                   value={query}
                   onChange={handleSearchChange}
                   onFocus={() => query && setShowResults(true)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault(); // empêche un reload de page
+                      handleSearchClick(); // ✅ lance la recherche
+                    }
+                  }}
                   sx={{
                     width: "100%",
                     "& .MuiOutlinedInput-root": {
@@ -515,6 +565,7 @@ function Navbar() {
                   }}
                 />
                 <IconButton
+                  onClick={handleSearchClick}
                   sx={{
                     position: "absolute",
                     right: 5,
@@ -558,7 +609,10 @@ function Navbar() {
                         <Box
                           key={book.id}
                           onMouseDown={() => {
-                            // router.push(`/book/${book.id}`);
+                            if (pathname !== "/livres/") {
+                              setLoadPage(true);
+                              router.push(`/livres/${book.id}`);
+                            }
                             setShowResults(false);
                           }}
                           sx={{

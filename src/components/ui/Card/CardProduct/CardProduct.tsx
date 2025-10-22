@@ -64,6 +64,8 @@ function CardProduct({ book, selectedCategory }: CardProductProps) {
           },
           position: "relative",
           pointerEvents: loadItemsClick ? "none" : "auto",
+          userSelect: "none",
+          WebkitTapHighlightColor: "transparent",
         }}
       >
         {/* Image de couverture */}

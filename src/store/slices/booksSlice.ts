@@ -124,6 +124,15 @@ const booksSlice = createSlice({
     setSelectedBook: (state, action: PayloadAction<Book | null>) => {
       state.selectedBook = action.payload;
     },
+
+    setClearBookById: (state) => {
+      state.items.forEach((item) => {
+        item.bookById = [];
+        item.loadingBookById = false;
+        item.errorBookById = null;
+      });
+    },
+
     setBooksFromSnapshot: (state, action: PayloadAction<Book[]>) => {
       state.items.forEach((item) => {
         item.books = action.payload;
@@ -392,7 +401,7 @@ export const {
   setSelectedCategory,
   setBooksFromSnapshot,
   setAuthorsFromSnapshot,
-
+  setClearBookById,
   setSearchQuery,
   clearError,
   clearBooks,

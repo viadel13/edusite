@@ -18,6 +18,7 @@ import NextLink from "next/link";
 import {
   selectBookById,
   selectLoadingBookById,
+  setClearBookById,
 } from "@/store/slices/booksSlice";
 import PageContainer from "@/components/layout/PageContainer/PageContainer";
 import Grid from "@mui/material/Grid";
@@ -46,7 +47,10 @@ function SuspendedBookDetails() {
     useAddToCart();
 
   useEffect(() => {
-    if (id) dispatch(fetchBookById(id));
+    if (id) {
+      dispatch(setClearBookById());
+      dispatch(fetchBookById(id));
+    }
   }, [dispatch, id]);
 
   const handleSelectImage = (url: string) => {
