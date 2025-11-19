@@ -39,6 +39,7 @@ import {
   loadCartFromLocalStorage,
   selectCartCount,
 } from "@/store/slices/cartSlice";
+import LoginDialog from "@/components/ui/LoginDialog/LoginDialog";
 
 const StyledBadge = styled(Badge)<BadgeProps>(() => ({
   "& .MuiBadge-badge": {
@@ -55,6 +56,7 @@ const StyledBadge = styled(Badge)<BadgeProps>(() => ({
 
 function Navbar() {
   const [open, setOpen] = useState(false),
+    [openLogin, setOpenLogin] = useState(false),
     toggleDrawer = (newOpen: boolean) => () => {
       setOpen(newOpen);
     },
@@ -470,7 +472,14 @@ function Navbar() {
                       },
                     }}
                   >
-                    <MenuItem onClick={handleClose}>Connexion</MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleClose();
+                        setOpenLogin(true);
+                      }}
+                    >
+                      Connexion
+                    </MenuItem>
                     <MenuItem onClick={handleClose}>Inscription</MenuItem>
                     {/*<MenuItem onClick={handleClose}>Logout</MenuItem>*/}
                   </Menu>
@@ -645,7 +654,12 @@ function Navbar() {
         </PageContainer>
       </AppBar>
 
-      <DrawerList open={open} setOpen={setOpen} />
+      <DrawerList
+        open={open}
+        setOpen={setOpen}
+        onLoginClick={() => setOpenLogin(true)}
+      />
+      <LoginDialog open={openLogin} onClose={() => setOpenLogin(false)} />
     </>
   );
 }

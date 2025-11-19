@@ -32,9 +32,10 @@ import { fetchCategories } from "@/store/slices/booksThunks";
 interface DrawerListProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onLoginClick: () => void;
 }
 
-function DrawerList({ open, setOpen }: DrawerListProps) {
+function DrawerList({ open, setOpen, onLoginClick }: DrawerListProps) {
   const pathname = usePathname(),
     router = useRouter(),
     { setLoadPage } = usePageLoader();
@@ -89,6 +90,10 @@ function DrawerList({ open, setOpen }: DrawerListProps) {
                 textDecoration: "underline",
                 boxShadow: "none",
               },
+            }}
+            onClick={() => {
+              setOpen(false);
+              onLoginClick();
             }}
           >
             <Typography
