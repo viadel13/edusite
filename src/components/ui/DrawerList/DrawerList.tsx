@@ -26,8 +26,9 @@ import {
   selectCategories,
   selectLoadingCatetogeries,
 } from "@/store/slices/booksSlice";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { fetchCategories } from "@/store/slices/booksThunks";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface DrawerListProps {
   open: boolean;
@@ -42,10 +43,28 @@ function DrawerList({ open, setOpen, onLoginClick }: DrawerListProps) {
   const dispatch = useAppDispatch();
   const categories = useAppSelector(selectCategories);
   const loading = useAppSelector(selectLoadingCatetogeries);
+  const { user, logout } = useAuth();
+  const [pendingLogout, setPendingLogout] = useState(false);
 
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
+
+  const handleAuthCta = async () => {
+    if (user) {
+      try {
+        setPendingLogout(true);
+        await logout();
+      } catch (error) {
+        console.error("Erreur lors de la déconnexion", error);
+      } finally {
+        setPendingLogout(false);
+      }
+    } else {
+      setOpen(false);
+      onLoginClick();
+    }
+  };
 
   const DrawerListPage = (
     <Box
@@ -72,18 +91,29 @@ function DrawerList({ open, setOpen, onLoginClick }: DrawerListProps) {
             height="35"
             style={{ color: "black" }}
           />
-          <Typography fontSize={22}>Salut,</Typography>
+          <Box>
+            <Typography fontSize={20} fontWeight={600} lineHeight={1.2}>
+              {user ? `Salut, ${user.name}` : "Salut,"}
+            </Typography>
+            {user?.email && (
+              <Typography variant="body2" color="text.secondary">
+                {user.email}
+              </Typography>
+            )}
+          </Box>
 
           <Button
             variant={"contained"}
             disableElevation
             size={"small"}
+            disabled={pendingLogout}
             sx={{
               backgroundColor: "primary.main",
               color: "white",
               textTransform: "none",
               transition: "all 0.3s ease",
-              px: " 8px",
+              px: "8px",
+              minWidth: 120,
               "&:hover": {
                 backgroundColor: "transparent",
                 color: "black",
@@ -91,18 +121,21 @@ function DrawerList({ open, setOpen, onLoginClick }: DrawerListProps) {
                 boxShadow: "none",
               },
             }}
-            onClick={() => {
-              setOpen(false);
-              onLoginClick();
-            }}
+            onClick={handleAuthCta}
           >
             <Typography
               sx={{
                 color: "inherit",
                 transition: "all 0.3s ease",
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
               }}
             >
-              Connexion
+              {pendingLogout ? (
+                <CircularProgress size={16} sx={{ color: "inherit" }} />
+              ) : null}
+              {user ? "Déconnexion" : "Connexion"}
             </Typography>
           </Button>
         </Stack>
