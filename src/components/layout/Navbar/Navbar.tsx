@@ -20,7 +20,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { pages } from "@/constants/links";
 import PageContainer from "@/components/layout/PageContainer/PageContainer";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Fragment, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import DrawerList from "@/components/ui/DrawerList/DrawerList";
 import { usePathname, useRouter } from "next/navigation";
 import { usePageLoader } from "@/contexts/PageLoaderContext";
@@ -40,6 +40,7 @@ import {
   selectCartCount,
 } from "@/store/slices/cartSlice";
 import LoginDialog from "@/components/ui/LoginDialog/LoginDialog";
+import { useAuth } from "@/contexts/AuthContext";
 
 const StyledBadge = styled(Badge)<BadgeProps>(() => ({
   "& .MuiBadge-badge": {
@@ -73,7 +74,8 @@ function Navbar() {
     results = useAppSelector(selectSearchResults),
     loadingSearch = useAppSelector(selectLoadingSearchBooks),
     cartCount = useAppSelector(selectCartCount),
-    searchButtonRef = useRef<HTMLButtonElement | null>(null);
+    searchButtonRef = useRef<HTMLButtonElement | null>(null),
+    { user, loading: authLoading, logout } = useAuth();
 
   useEffect(() => {
     dispatch(loadCartFromLocalStorage());
@@ -136,6 +138,25 @@ function Navbar() {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const accountLabel = authLoading ? "Chargement..." : user?.name ?? "Mon Compte";
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion", error);
+    } finally {
+      handleClose();
+    }
+  };
+
+  const handleLoginClick = () => {
+    handleClose();
+    if (!user) {
+      setOpenLogin(true);
+    }
   };
 
   return (
@@ -453,7 +474,7 @@ function Navbar() {
                       color: "black",
                     }}
                   >
-                    <Box component="span">Mon Compte</Box>
+                    <Box component="span">{accountLabel}</Box>
                   </Button>
                   <Menu
                     elevation={2}
@@ -472,20 +493,35 @@ function Navbar() {
                       },
                     }}
                   >
-                    <MenuItem
-                      onClick={() => {
-                        handleClose();
-                        setOpenLogin(true);
-                      }}
-                    >
-                      Connexion
-                    </MenuItem>
-                    <MenuItem onClick={handleClose}>Inscription</MenuItem>
-                    {/*<MenuItem onClick={handleClose}>Logout</MenuItem>*/}
+                    {user ? (
+                      <>
+                        <MenuItem disabled sx={{ cursor: "default" }}>
+                          <Box>
+                            <Typography variant="caption" color="text.secondary">
+                              Connecté en tant que
+                            </Typography>
+                            <Typography fontWeight={600}>{user.name}</Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {user.email}
+                            </Typography>
+                          </Box>
+                        </MenuItem>
+                        <MenuItem onClick={handleLogout}>Se déconnecter</MenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <MenuItem onClick={handleLoginClick}>Connexion</MenuItem>
+                        <MenuItem disabled sx={{ opacity: 0.6 }}>
+                          Inscription (bientôt)
+                        </MenuItem>
+                      </>
+                    )}
                   </Menu>
                 </Stack>
 
                 <IconButton
+                  aria-label="Ouvrir le menu utilisateur"
+                  onClick={handleClick}
                   sx={{
                     display: { xs: "flex", sm: "flex", md: "flex", lg: "none" },
                   }}
@@ -654,11 +690,15 @@ function Navbar() {
         </PageContainer>
       </AppBar>
 
-      <DrawerList
-        open={open}
-        setOpen={setOpen}
-        onLoginClick={() => setOpenLogin(true)}
-      />
+        <DrawerList
+          open={open}
+          setOpen={setOpen}
+          onLoginClick={() => {
+            if (!user) {
+              setOpenLogin(true);
+            }
+          }}
+        />
       <LoginDialog open={openLogin} onClose={() => setOpenLogin(false)} />
     </>
   );

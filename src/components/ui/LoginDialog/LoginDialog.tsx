@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -17,6 +17,9 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { FirebaseError } from "firebase/app";
+
+import { useAuth } from "@/contexts/AuthContext";
 
 interface LoginDialogProps {
   open: boolean;
@@ -31,6 +34,17 @@ const initialValues = {
 function LoginDialog({ open, onClose }: LoginDialogProps) {
   const [values, setValues] = useState(initialValues);
   const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const { login } = useAuth();
+
+  const isSubmitDisabled = useMemo(
+    () =>
+      submitting ||
+      values.email.trim().length === 0 ||
+      values.password.trim().length === 0,
+    [submitting, values.email, values.password],
+  );
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -40,13 +54,41 @@ function LoginDialog({ open, onClose }: LoginDialogProps) {
   const handleClose = () => {
     setValues(initialValues);
     setShowPassword(false);
+    setFormError(null);
     onClose();
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const resolveErrorMessage = (error: unknown) => {
+    if (error instanceof FirebaseError) {
+      switch (error.code) {
+        case "auth/invalid-credential":
+        case "auth/invalid-email":
+        case "auth/wrong-password":
+          return "Identifiants incorrects. Merci de réessayer.";
+        case "auth/user-disabled":
+          return "Ce compte a été désactivé. Contactez le support.";
+        case "auth/too-many-requests":
+          return "Trop de tentatives. Veuillez patienter quelques instants.";
+        default:
+          return "Connexion impossible pour le moment. Merci de réessayer.";
+      }
+    }
+    return "Connexion impossible pour le moment. Merci de réessayer.";
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // TODO: replace with actual authentication logic
-    handleClose();
+    setFormError(null);
+
+    try {
+      setSubmitting(true);
+      await login(values.email.trim(), values.password.trim());
+      handleClose();
+    } catch (error) {
+      setFormError(resolveErrorMessage(error));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -93,6 +135,7 @@ function LoginDialog({ open, onClose }: LoginDialogProps) {
               value={values.email}
               onChange={handleChange}
               fullWidth
+              autoComplete="email"
             />
             <TextField
               required
@@ -102,6 +145,7 @@ function LoginDialog({ open, onClose }: LoginDialogProps) {
               value={values.password}
               onChange={handleChange}
               fullWidth
+              autoComplete="current-password"
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -121,6 +165,7 @@ function LoginDialog({ open, onClose }: LoginDialogProps) {
               type="submit"
               variant="contained"
               disableElevation
+              disabled={isSubmitDisabled}
               sx={{
                 textTransform: "none",
                 borderRadius: 2,
@@ -128,8 +173,13 @@ function LoginDialog({ open, onClose }: LoginDialogProps) {
                 fontSize: 16,
               }}
             >
-              Se connecter
+              {submitting ? "Connexion..." : "Se connecter"}
             </Button>
+            {formError && (
+              <Typography color="error" variant="body2" textAlign="center">
+                {formError}
+              </Typography>
+            )}
           </Stack>
         </Box>
       </DialogContent>
