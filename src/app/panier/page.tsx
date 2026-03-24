@@ -4,6 +4,10 @@ import {
   Box,
   Breadcrumbs,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   IconButton,
   Link as MUILink,
   Paper,
@@ -15,6 +19,7 @@ import PageContainer from "@/components/layout/PageContainer/PageContainer";
 import Grid from "@mui/material/Grid";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import {
+  clearCart,
   removeFromCart,
   selectCartItems,
   selectCartTotal,
@@ -30,6 +35,7 @@ import { usePageLoader } from "@/contexts/PageLoaderContext";
 import { usePathname, useRouter } from "next/navigation";
 import { BounceLoader } from "react-spinners";
 import NextLink from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
 
 function Page() {
   const Items = useAppSelector(selectCartItems);
@@ -47,6 +53,12 @@ function Page() {
     load: boolean;
     exist: boolean | null;
   }>({ load: true, exist: null });
+  const { user } = useAuth();
+  const [openPayment, setOpenPayment] = useState(false);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [invoiceNumber, setInvoiceNumber] = useState<string | null>(null);
+  const [invoiceDate, setInvoiceDate] = useState<string | null>(null);
+  const [invoiceAmount, setInvoiceAmount] = useState<number>(0);
 
   useEffect(() => {
     if (Items.length > 0) {
@@ -100,6 +112,33 @@ function Page() {
       dispatch(removeFromCart(item.id));
       toast.success("Produit supprimé du panier !");
     }, 2000);
+  };
+
+
+  const startCheckout = () => {
+    if (!user) {
+      toast.error("Vous devez vous connecter ou vous inscrire avant de commander.");
+      setLoadPage(true);
+      router.push("/inscription");
+      return;
+    }
+
+    setOpenPayment(true);
+  };
+
+  const simulatePayment = async () => {
+    setPaymentLoading(true);
+
+    setTimeout(() => {
+      const generatedInvoice = `INV-${Date.now()}`;
+      setInvoiceNumber(generatedInvoice);
+      setInvoiceDate(new Date().toLocaleString("fr-FR"));
+      setInvoiceAmount(TotalCard);
+      dispatch(clearCart());
+      setPaymentLoading(false);
+      setOpenPayment(false);
+      toast.success("Paiement validé. Facture générée.");
+    }, 1600);
   };
 
   const breadcrumbs = [
@@ -546,6 +585,7 @@ function Page() {
                   variant={"contained"}
                   disableElevation
                   fullWidth
+                  onClick={startCheckout}
                   sx={{
                     color: "white",
                     mt: 2,
@@ -623,6 +663,43 @@ function Page() {
           </Paper>
         )}
       </Stack>
+      {invoiceNumber && (
+        <Paper elevation={0} sx={{ mt: 3, p: 3, border: "1px solid #E5E7EB" }}>
+          <Typography variant="h6" fontWeight={700}>
+            Facture générée
+          </Typography>
+          <Typography>N° facture : {invoiceNumber}</Typography>
+          <Typography>Date : {invoiceDate}</Typography>
+          <Typography>Montant payé : {invoiceAmount.toLocaleString()} FCFA</Typography>
+          <Typography>
+            Statut : Payée • Client : {user?.name} ({user?.email})
+          </Typography>
+        </Paper>
+      )}
+
+      <Dialog open={openPayment} onClose={() => setOpenPayment(false)} fullWidth maxWidth="xs">
+        <DialogTitle>Simulation de paiement</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} mt={1}>
+            <TextField label="Numéro de carte" placeholder="4242 4242 4242 4242" fullWidth />
+            <TextField label="Nom sur la carte" fullWidth />
+            <Stack direction="row" spacing={2}>
+              <TextField label="MM/AA" fullWidth />
+              <TextField label="CVC" fullWidth />
+            </Stack>
+            <Typography variant="body2" color="text.secondary">
+              Ceci est une simulation locale pour valider le flux de commande.
+            </Typography>
+          </Stack>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={() => setOpenPayment(false)}>Annuler</Button>
+          <Button onClick={simulatePayment} variant="contained" disabled={paymentLoading}>
+            {paymentLoading ? "Paiement en cours..." : "Valider le paiement"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </PageContainer>
   );
 }

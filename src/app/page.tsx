@@ -1,8 +1,7 @@
 "use client";
 
-import { Button, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import HeroSection from "@/components/section/HeroSection/HeroSection";
-
 import BenefitsService from "@/components/section/BenefitsService/BenefitsService";
 import CategoriesSection from "@/components/section/CategoriesSection/CategoriesSection";
 import SpecialProducts from "@/components/section/SpecialProducts/SpecialProducts";
@@ -10,9 +9,6 @@ import OurAuthors from "@/components/section/OurAuthors/OurAuthors";
 import Grid from "@mui/material/Grid";
 import Categories from "@/components/common/Categories/Categories";
 import PageContainer from "@/components/layout/PageContainer/PageContainer";
-import { useEffect } from "react";
-import { usePageLoader } from "@/contexts/PageLoaderContext";
-import { usePathname } from "next/navigation";
 
 export default function Home() {
   return (
@@ -24,9 +20,9 @@ export default function Home() {
             size={{ xs: 12, md: 12, lg: 2.5 }}
             sx={{
               display: {
-                xs: "none", // téléphone
-                sm: "none", // tablette
-                md: "none", // à partir du desktop
+                xs: "none",
+                sm: "none",
+                md: "none",
                 lg: "block",
               },
             }}

@@ -20,6 +20,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { FirebaseError } from "firebase/app";
 
 import { useAuth } from "@/contexts/AuthContext";
+import NextLink from "next/link";
 
 interface LoginDialogProps {
   open: boolean;
@@ -187,7 +188,12 @@ function LoginDialog({ open, onClose }: LoginDialogProps) {
       <DialogActions sx={{ px: 3, pb: 3 }}>
         <Typography variant="body2" color="text.secondary">
           Pas encore de compte ?
-          <Box component="span" sx={{ color: "primary.main", fontWeight: 600, ml: 0.5 }}>
+          <Box
+            component={NextLink}
+            href="/inscription"
+            onClick={handleClose}
+            sx={{ color: "primary.main", fontWeight: 600, ml: 0.5, textDecoration: "none" }}
+          >
             Inscrivez-vous
           </Box>
         </Typography>
