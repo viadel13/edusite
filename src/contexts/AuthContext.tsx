@@ -16,6 +16,8 @@ import {
   setPersistence,
   signInWithEmailAndPassword,
   signOut,
+  createUserWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 
 import { auth } from "@/lib/firebase/config";
@@ -129,6 +131,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await signInWithEmailAndPassword(auth, email, password);
   }, []);
 
+
+  const register = useCallback(
+    async ({
+      name,
+      email,
+      password,
+    }: {
+      name: string;
+      email: string;
+      password: string;
+    }) => {
+      const credentials = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+
+      if (name.trim()) {
+        await updateProfile(credentials.user, {
+          displayName: name.trim(),
+        });
+      }
+
+      await upsertUserProfile({
+        uid: credentials.user.uid,
+        email: credentials.user.email ?? email,
+        name: name.trim() || email.split("@")[0],
+        photoURL: credentials.user.photoURL,
+      });
+    },
+    [],
+  );
+
   const logout = useCallback(async () => {
     await signOut(auth);
     persistUser(null);
@@ -140,9 +175,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user,
       loading,
       login,
+      register,
       logout,
     }),
-    [user, loading, login, logout],
+    [user, loading, login, register, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

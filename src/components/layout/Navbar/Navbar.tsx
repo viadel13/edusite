@@ -17,7 +17,6 @@ import NextLink from "next/link";
 import Image from "next/image";
 import Badge from "@mui/material/Badge";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCartOutlined";
-import { pages } from "@/constants/links";
 import PageContainer from "@/components/layout/PageContainer/PageContainer";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useRef, useState } from "react";
@@ -74,7 +73,6 @@ function Navbar() {
     results = useAppSelector(selectSearchResults),
     loadingSearch = useAppSelector(selectLoadingSearchBooks),
     cartCount = useAppSelector(selectCartCount),
-    searchButtonRef = useRef<HTMLButtonElement | null>(null),
     { user, loading: authLoading, logout } = useAuth();
 
   useEffect(() => {
@@ -511,8 +509,14 @@ function Navbar() {
                     ) : (
                       <>
                         <MenuItem onClick={handleLoginClick}>Connexion</MenuItem>
-                        <MenuItem disabled sx={{ opacity: 0.6 }}>
-                          Inscription (bientôt)
+                        <MenuItem
+                          onClick={() => {
+                            handleClose();
+                            setLoadPage(true);
+                            router.push("/inscription");
+                          }}
+                        >
+                          Inscription
                         </MenuItem>
                       </>
                     )}

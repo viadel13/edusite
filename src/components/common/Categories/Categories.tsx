@@ -1,37 +1,43 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
-  Collapse,
   List,
   ListItemButton,
   ListItemText,
-  Paper,
   Typography,
   Stack,
   CircularProgress,
   Box,
   Divider,
 } from "@mui/material";
-import { Add, Remove } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import {
-  fetchBooksByCategory,
-  fetchCategories,
-} from "@/store/slices/booksThunks";
+import { fetchCategories } from "@/store/slices/booksThunks";
 import {
   selectCategories,
   selectLoadingCatetogeries,
 } from "@/store/slices/booksSlice";
+import { usePageLoader } from "@/contexts/PageLoaderContext";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Categories() {
   const dispatch = useAppDispatch();
   const categories = useAppSelector(selectCategories);
   const loading = useAppSelector(selectLoadingCatetogeries);
+  const { setLoadPage } = usePageLoader();
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
+
+  const handleCategoryClick = (categoryId: string) => {
+    if (pathname !== "/categories") {
+      setLoadPage(true);
+    }
+    router.push(`/categories?category=${categoryId}`);
+  };
 
   return (
     <Box
@@ -42,8 +48,6 @@ export default function Categories() {
         mt: 10,
         borderLeft: "1px solid rgba(108, 117, 125, 0.2)",
         borderRight: "1px solid rgba(108, 117, 125, 0.2)",
-
-        // boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
       }}
     >
       <Stack
@@ -65,7 +69,7 @@ export default function Categories() {
             letterSpacing: "0.05em",
           }}
         >
-          Categories
+          Catégories
         </Typography>
         <Divider />
         {loading ? (
@@ -77,6 +81,7 @@ export default function Categories() {
             {categories.map((cat) => (
               <Stack key={cat.id}>
                 <ListItemButton
+                  onClick={() => handleCategoryClick(cat.id)}
                   sx={{
                     py: 1.5,
                     px: 2,

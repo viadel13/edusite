@@ -156,7 +156,7 @@ function DrawerList({ open, setOpen, onLoginClick }: DrawerListProps) {
           letterSpacing: "0.05em",
         }}
       >
-        Categories
+        Catégories
       </Typography>
       {loading ? (
         <Stack alignItems="center" justifyContent="center" py={3}>
@@ -167,6 +167,12 @@ function DrawerList({ open, setOpen, onLoginClick }: DrawerListProps) {
           {categories.map((cat) => (
             <Stack key={cat.id}>
               <ListItemButton
+                onClick={() => {
+                  if (pathname !== "/categories") {
+                    setLoadPage(true);
+                  }
+                  router.push(`/categories?category=${cat.id}`);
+                }}
                 sx={{
                   py: 1.5,
                   px: 2,

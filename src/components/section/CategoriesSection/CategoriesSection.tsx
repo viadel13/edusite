@@ -96,7 +96,7 @@ const CategoriesSection: React.FC = () => {
           letterSpacing: "0.05em",
         }}
       >
-        Top Categories
+        Catégories à la une
       </Typography>
       {initialLoading || loadingSuperCategories ? (
         <Stack alignItems={"center"} mb={4}>
