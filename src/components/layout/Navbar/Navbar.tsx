@@ -138,7 +138,9 @@ function Navbar() {
     setAnchorEl(null);
   };
 
-  const accountLabel = authLoading ? "Chargement..." : user?.name ?? "Mon Compte";
+  const accountLabel = authLoading
+    ? "Chargement..."
+    : (user?.name ?? "Mon Compte");
 
   const handleLogout = async () => {
     try {
@@ -491,31 +493,45 @@ function Navbar() {
                       },
                     }}
                   >
-                    {user ? [
-                        <MenuItem disabled sx={{ cursor: "default" }}>
-                          <Box>
-                            <Typography variant="caption" color="text.secondary">
-                              Connecté en tant que
-                            </Typography>
-                            <Typography fontWeight={600}>{user.name}</Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              {user.email}
-                            </Typography>
-                          </Box>
-                        </MenuItem>
-                        <MenuItem onClick={handleLogout}>Se déconnecter</MenuItem>
-                      ] : [
-                        <MenuItem onClick={handleLoginClick}>Connexion</MenuItem>
-                        <MenuItem
-                          onClick={() => {
-                            handleClose();
-                            setLoadPage(true);
-                            router.push("/inscription");
-                          }}
-                        >
-                          Inscription
-                        </MenuItem>
-                      ]}
+                    {user
+                      ? [
+                          <MenuItem disabled sx={{ cursor: "default" }}>
+                            <Box>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
+                                Connecté en tant que
+                              </Typography>
+                              <Typography fontWeight={600}>
+                                {user.name}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                {user.email}
+                              </Typography>
+                            </Box>
+                          </MenuItem>,
+                          <MenuItem onClick={handleLogout}>
+                            Se déconnecter
+                          </MenuItem>,
+                        ]
+                      : [
+                          <MenuItem onClick={handleLoginClick}>
+                            Connexion
+                          </MenuItem>,
+                          <MenuItem
+                            onClick={() => {
+                              handleClose();
+                              setLoadPage(true);
+                              router.push("/inscription");
+                            }}
+                          >
+                            Inscription
+                          </MenuItem>,
+                        ]}
                   </Menu>
                 </Stack>
 
@@ -690,15 +706,15 @@ function Navbar() {
         </PageContainer>
       </AppBar>
 
-        <DrawerList
-          open={open}
-          setOpen={setOpen}
-          onLoginClick={() => {
-            if (!user) {
-              setOpenLogin(true);
-            }
-          }}
-        />
+      <DrawerList
+        open={open}
+        setOpen={setOpen}
+        onLoginClick={() => {
+          if (!user) {
+            setOpenLogin(true);
+          }
+        }}
+      />
       <LoginDialog open={openLogin} onClose={() => setOpenLogin(false)} />
     </>
   );
