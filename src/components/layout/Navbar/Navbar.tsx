@@ -491,8 +491,7 @@ function Navbar() {
                       },
                     }}
                   >
-                    {user ? (
-                      <>
+                    {user ? [
                         <MenuItem disabled sx={{ cursor: "default" }}>
                           <Box>
                             <Typography variant="caption" color="text.secondary">
@@ -505,9 +504,7 @@ function Navbar() {
                           </Box>
                         </MenuItem>
                         <MenuItem onClick={handleLogout}>Se déconnecter</MenuItem>
-                      </>
-                    ) : (
-                      <>
+                      ] : [
                         <MenuItem onClick={handleLoginClick}>Connexion</MenuItem>
                         <MenuItem
                           onClick={() => {
@@ -518,8 +515,7 @@ function Navbar() {
                         >
                           Inscription
                         </MenuItem>
-                      </>
-                    )}
+                      ]}
                   </Menu>
                 </Stack>
 

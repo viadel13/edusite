@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import PageContainer from "@/components/layout/PageContainer/PageContainer";
 import NextLink from "next/link";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { usePageLoader } from "@/contexts/PageLoaderContext";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import MenuItem from "@mui/material/MenuItem";
@@ -38,7 +38,7 @@ import CardProduct from "@/components/ui/Card/CardProduct/CardProduct";
 import { Book } from "@/types/firestore.type";
 import { Icon } from "@iconify/react";
 
-function PageCategories() {
+function CategoriesPageContent() {
   const { setLoadPage } = usePageLoader();
   const pathname = usePathname();
   const router = useRouter();
@@ -323,4 +323,18 @@ function PageCategories() {
   );
 }
 
-export default PageCategories;
+export default function PageCategories() {
+  return (
+    <Suspense
+      fallback={
+        <PageContainer>
+          <Stack alignItems="center" justifyContent="center" py={6}>
+            <CircularProgress />
+          </Stack>
+        </PageContainer>
+      }
+    >
+      <CategoriesPageContent />
+    </Suspense>
+  );
+}
